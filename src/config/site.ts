@@ -70,12 +70,12 @@ export const siteConfig: SiteConfig = {
 		pageTransitions: true, // Transition between pages
 	},
 
-	name: "Shipkit",
-	title: "Launch your app today",
-	url: "https://shipkit.io",
-	ogImage: "https://shipkit.io/og",
+	name: "No BS",
+	title: "Find logical fallacies.",
+	url: "https://no.bs.sh",
+	ogImage: "https://shipkit.io/og?title=No%20BS&description=Find%20logical%20fallacies.%20Call%20out%20BS.&url=no.bs.sh",
 	description:
-		"Launch your app at light speed. Fast, flexible, and feature-packed for the modern web.",
+		"Find logical fallacies. Call out BS.",
 	links: {
 		twitter: "https://twitter.com/lacybuilds",
 		twitter_follow: "https://twitter.com/intent/follow?screen_name=lacybuilds",
