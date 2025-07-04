@@ -12,7 +12,11 @@ export const metadata: Metadata = defaultMetadata;
 export default function Layout({ children }: { children: React.ReactNode }) {
 	return (
 		<RootLayout>
-			<MainLayout header={<Header />} footer={false}>
+			<MainLayout header={<Header />} footer={
+				<div className="block text-center text-sm text-muted-foreground">
+					Created by <Link href="https://www.lacymorrow.com">Lacy Morrow</Link>
+				</div>
+			}>
 				{children}
 			</MainLayout>
 		</RootLayout>

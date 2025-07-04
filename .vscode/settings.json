@@ -49,5 +49,8 @@
   },
   "[mdx]": {
     "editor.defaultFormatter": "unifiedjs.vscode-mdx"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "HookyQR.beautify"
   }
 }

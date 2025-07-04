@@ -22,6 +22,14 @@ export function FallacyDetector() {
 	// Track active toast IDs to prevent duplicates
 	const activeToastRef = useRef<string | number | null>(null);
 
+	// Define example texts
+	const examples = [
+		"Smoking is not bad for you; my grandpa smoked a pack a day and lived to be 90.",
+		"If we allow students to use calculators, they'll never learn basic math. Soon, they won't even be able to do simple addition without a machine!",
+		"Of course, he's against the new tax plan; he's rich and doesn't want to pay his fair share!",
+		"The vast majority of people believe in ghosts, so they must be real.",
+	];
+
 	// Minimum text length before we start analyzing
 	const MIN_TEXT_LENGTH = 20;
 
@@ -129,10 +137,11 @@ export function FallacyDetector() {
 	return (
 		<div className="mx-auto max-w-4xl space-y-6 p-6">
 			<Card className="p-6">
-				<h2 className="mb-4 text-2xl font-bold">Logical Fallacy Detector</h2>
+				<h2 className="mb-4 text-2xl font-bold">Find Logical Fallacies and Call Out BS</h2>
+				<p className="mb-4 text-sm text-muted-foreground">Find logical fallacies in anything. Try pasting news, speeches, arguments, or anything else.</p>
 				<div className="space-y-4">
 					<Textarea
-						placeholder={`Enter text to analyze for logical fallacies... (minimum ${MIN_TEXT_LENGTH} characters)`}
+						placeholder={`Enter any text to analyze for logical fallacies... (minimum ${MIN_TEXT_LENGTH} characters)`}
 						value={text}
 						onChange={handleTextChange}
 						className="min-h-[200px]"
@@ -145,6 +154,26 @@ export function FallacyDetector() {
 						>
 							{isAnalyzing ? <span className="flex items-center gap-2"><Loader2 className="animate-spin" /> Analyzing...</span> : "Analyze Text"}
 						</Button>
+					</div>
+				</div>
+
+				<div className="mt-4 border-t pt-4">
+					<h3 className="mb-2 text-lg font-semibold">Try an example:</h3>
+					<div className="flex flex-wrap gap-2">
+						{examples.map((example, index) => (
+							<Button
+								key={index}
+								variant="outline"
+								size="sm"
+								onClick={() => {
+									setText(example);
+									analyzeText();
+								}}
+								disabled={isAnalyzing}
+							>
+								{example.substring(0, 30)}...
+							</Button>
+						))}
 					</div>
 				</div>
 			</Card>

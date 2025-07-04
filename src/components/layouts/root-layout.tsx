@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 import Head from "next/head";
 
-import { Space_Grotesk as FontSans, Noto_Serif as FontSerif } from "next/font/google";
+import { Source_Sans_3 as FontSans, Noto_Serif as FontSerif } from "next/font/google";
 
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";

@@ -58,7 +58,7 @@ const headerVariants = cva(
 );
 
 export const Header: React.FC<HeaderProps> = ({
-	logoHref = routes.home,
+	logoHref = siteConfig.url,
 	logoIcon = <Logo />,
 	logoText = siteConfig.name,
 	navLinks = defaultNavLinks,
