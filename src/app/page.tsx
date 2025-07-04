@@ -10,17 +10,16 @@ export const metadata: Metadata = {
 
 export default function FallacyDetectorPage() {
 	return (
-		<main className="container mx-auto py-8">
-			<div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-				<div className="lg:col-span-3">
-					<FallacyDetector />
-				</div>
-				<div className="lg:col-span-1">
-					<div className="space-y-6">
-						<FallacyLegend />
-					</div>
+		<div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+			<div className="lg:col-span-3">
+				<FallacyDetector />
+			</div>
+			<div className="lg:col-span-1">
+				<div className="space-y-6">
+					<FallacyLegend />
 				</div>
 			</div>
-		</main>
+		</div>
+
 	);
 }

@@ -135,7 +135,7 @@ export function FallacyDetector() {
 	}, []);
 
 	return (
-		<div className="mx-auto max-w-4xl space-y-6 p-6">
+		<div className="mx-auto max-w-4xl space-y-6">
 			<Card className="p-6">
 				<h2 className="mb-4 text-2xl font-bold">Find Logical Fallacies and Call Out BS</h2>
 				<p className="mb-4 text-sm text-muted-foreground">Find logical fallacies in anything. Try pasting news, speeches, arguments, or anything else.</p>

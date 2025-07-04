@@ -12,12 +12,14 @@ export const metadata: Metadata = defaultMetadata;
 export default function Layout({ children }: { children: React.ReactNode }) {
 	return (
 		<RootLayout>
-			<MainLayout header={<Header />} footer={
-				<div className="block text-center text-sm text-muted-foreground">
-					Created by <Link href="https://www.lacymorrow.com">Lacy Morrow</Link>
-				</div>
-			}>
-				{children}
+			<MainLayout header={<Header />} footer={false}>
+				<main className="container mx-auto py-8 space-y-6">
+
+					{children}
+					<div className="block text-center text-sm text-muted-foreground">
+						Created by <Link href="https://www.lacymorrow.com">Lacy Morrow</Link>
+					</div>
+				</main>
 			</MainLayout>
 		</RootLayout>
 	);
