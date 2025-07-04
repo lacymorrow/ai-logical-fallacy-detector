@@ -82,7 +82,7 @@ export const Header: React.FC<HeaderProps> = ({
 			>
 				{variant === "floating" && <div className="h-[12px] w-full" />}
 				<nav className="container flex items-center justify-between gap-md">
-					<div className="hidden flex-col gap-md md:flex md:flex-row md:items-center">
+					<div className="flex-col gap-md flex md:flex-row md:items-center">
 						<Link
 							href={logoHref}
 							className="flex grow items-center gap-2 text-lg font-semibold md:mr-6 md:text-base"
@@ -90,108 +90,7 @@ export const Header: React.FC<HeaderProps> = ({
 							{logoIcon}
 							<span className="block whitespace-nowrap">{logoText}</span>
 						</Link>
-						<Search />
-					</div>
-
-					<Sheet>
-						<SheetTrigger asChild>
-							<Button variant="outline" size="icon" className="shrink-0 md:hidden">
-								<HamburgerMenuIcon className="h-5 w-5" />
-								<span className="sr-only">Toggle navigation menu</span>
-							</Button>
-						</SheetTrigger>
-						<SheetContent side="left">
-							<nav className="grid gap-6 font-medium">
-								<Link href={logoHref} className="flex items-center gap-2 text-lg font-semibold">
-									{logoIcon}
-									<span className="sr-only">{logoText}</span>
-								</Link>
-								{navLinks.map((link) => (
-									<Link
-										key={`${link.href}-${link.label}`}
-										href={link.href}
-										className={cn(
-											"text-muted-foreground hover:text-foreground",
-											link.isCurrent ? "text-foreground" : ""
-										)}
-									>
-										{link.label}
-									</Link>
-								))}
-								{!session && (
-									<>
-										<Link
-											href={routes.auth.signIn}
-											className={cn(
-												buttonVariants({ variant: "default" }),
-												"w-full justify-center"
-											)}
-										>
-											Get Shipkit
-										</Link>
-										<Link
-											href={routes.auth.signIn}
-											className={cn(buttonVariants({ variant: "ghost" }), "w-full justify-center")}
-										>
-											Login
-										</Link>
-									</>
-								)}
-								{session && (
-									<>
-										<Link
-											href={routes.docs}
-											className={cn("text-muted-foreground hover:text-foreground")}
-										>
-											Documentation
-										</Link>
-										<Link
-											href={routes.app.dashboard}
-											className={cn(
-												buttonVariants({ variant: "default" }),
-												"w-full justify-center"
-											)}
-										>
-											Dashboard
-										</Link>
-									</>
-								)}
-							</nav>
-						</SheetContent>
-					</Sheet>
-					<div className="flex items-center gap-2 md:ml-auto lg:gap-4">
-						<div className="hidden items-center justify-between gap-md text-sm md:flex">
-							{session && (
-								<Link
-									key={routes.docs}
-									href={routes.docs}
-									className={cn("text-muted-foreground transition-colors hover:text-foreground")}
-								>
-									Documentation
-								</Link>
-							)}
-							{navLinks.map((link) => (
-								<Link
-									key={`${link.href}-${link.label}`}
-									href={link.href}
-									className={cn(
-										"transition-colors hover:text-foreground",
-										link.isCurrent ? "text-foreground" : "text-muted-foreground"
-									)}
-								>
-									{link.label}
-								</Link>
-							))}
-						</div>
-						<div className="flex items-center gap-2">
-							{!session && <ThemeToggle variant="ghost" size="icon" className="rounded-full" />}
-
-							<UserMenu size="sm" />
-
-							{!session && (
-								<BuyButton />
-							)}
-						</div>
+						{/* <Search /> */}
 					</div>
 				</nav>
 			</header>

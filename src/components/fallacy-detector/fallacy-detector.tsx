@@ -1,0 +1,169 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import type { AnalysisResult } from "@/types/fallacy";
+import type * as React from "react";
+import { useCallback, useRef, useState } from "react";
+import { toast } from "sonner";
+import { StreamingAnalysis } from "./streaming-analysis";
+import { Loader2 } from "lucide-react";
+
+export function FallacyDetector() {
+	const [text, setText] = useState("");
+	const [isAnalyzing, setIsAnalyzing] = useState(false);
+	const [result, setResult] = useState<AnalysisResult | null>(null);
+	const abortControllerRef = useRef<AbortController | null>(null);
+	// Ref to track if we're currently rendering the StreamingAnalysis component
+	const isStreamingRef = useRef(false);
+	// Use a key to force remount of StreamingAnalysis when needed
+	const [streamKey, setStreamKey] = useState(0);
+	// Track active toast IDs to prevent duplicates
+	const activeToastRef = useRef<string | number | null>(null);
+
+	// Minimum text length before we start analyzing
+	const MIN_TEXT_LENGTH = 20;
+
+	// Cleanup function for ongoing streams
+	const cleanupStream = () => {
+		if (abortControllerRef.current) {
+			console.log("Aborting previous stream");
+			abortControllerRef.current.abort();
+			abortControllerRef.current = null;
+		}
+		isStreamingRef.current = false;
+
+		// Dismiss any active loading toast
+		if (activeToastRef.current) {
+			toast.dismiss(activeToastRef.current);
+			activeToastRef.current = null;
+		}
+	};
+
+	const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+		const newText = e.target.value;
+		setText(newText);
+	};
+
+	const analyzeText = async () => {
+		if (!text.trim()) {
+			toast.error("Please enter some text to analyze");
+			return;
+		}
+
+		if (text.length < MIN_TEXT_LENGTH) {
+			toast.error(`Text must be at least ${MIN_TEXT_LENGTH} characters long`);
+			return;
+		}
+
+		// If already analyzing, don't start another analysis
+		if (isAnalyzing) {
+			toast.info("Analysis already in progress");
+			return;
+		}
+
+		// If we're already streaming, prevent duplicate starts
+		if (isStreamingRef.current) {
+			console.log("Already streaming analysis, not starting another");
+			toast.info("Analysis already in progress");
+			return;
+		}
+
+		// Clean up any existing stream before starting a new one
+		cleanupStream();
+
+		// Mark that we're now analyzing
+		setIsAnalyzing(true);
+		setResult(null);
+		isStreamingRef.current = true;
+
+		// Create new abort controller for this stream
+		abortControllerRef.current = new AbortController();
+
+		// Increment the key to force a remount of the StreamingAnalysis component
+		setStreamKey(prevKey => prevKey + 1);
+
+		// Show loading toast and store its ID
+		activeToastRef.current = toast.loading("Analyzing text for logical fallacies...");
+
+		console.log("Analysis beginning with new abort controller");
+	};
+
+	const handleStreamComplete = useCallback((finalResult: AnalysisResult) => {
+		console.log("Stream complete callback received with fallacies:", finalResult.fallacies);
+
+		// Log each fallacy for detailed debugging
+		finalResult.fallacies.forEach((fallacy, index) => {
+			console.log(`Fallacy ${index + 1}: ${fallacy.type} (${fallacy.confidence.toFixed(2)})`);
+		});
+
+		// IMPORTANT: Get the actual fallacy count from the finalResult
+		const fallacyCount = finalResult.fallacies.length;
+		console.log(`Total fallacies found: ${fallacyCount}`);
+
+		// Update the state with the result
+		setResult(finalResult);
+		setIsAnalyzing(false);
+		isStreamingRef.current = false;
+
+		// Dismiss any active loading toast
+		if (activeToastRef.current) {
+			toast.dismiss(activeToastRef.current);
+		}
+
+		// Show success toast with the correct fallacy count
+		activeToastRef.current = toast.success(
+			`Analysis complete! Found ${fallacyCount} logical ${fallacyCount === 1 ? 'fallacy' : 'fallacies'}.`
+		);
+	}, []);
+
+	const handleStreamError = useCallback((error: Error) => {
+		cleanupStream();
+		setIsAnalyzing(false);
+		if (error.name !== "AbortError") {
+			toast.error(error.message);
+		}
+	}, []);
+
+	return (
+		<div className="mx-auto max-w-4xl space-y-6 p-6">
+			<Card className="p-6">
+				<h2 className="mb-4 text-2xl font-bold">Logical Fallacy Detector</h2>
+				<div className="space-y-4">
+					<Textarea
+						placeholder={`Enter text to analyze for logical fallacies... (minimum ${MIN_TEXT_LENGTH} characters)`}
+						value={text}
+						onChange={handleTextChange}
+						className="min-h-[200px]"
+					/>
+					<div className="flex justify-end">
+						<Button
+							onClick={analyzeText}
+							disabled={isAnalyzing || text.length < MIN_TEXT_LENGTH}
+							className="min-w-[120px]"
+						>
+							{isAnalyzing ? <span className="flex items-center gap-2"><Loader2 className="animate-spin" /> Analyzing...</span> : "Analyze Text"}
+						</Button>
+					</div>
+				</div>
+			</Card>
+
+			{(isAnalyzing || result) && (
+				<Card className="p-6">
+					<h3 className="mb-4 text-xl font-semibold">Analysis Results</h3>
+					{/* Only render StreamingAnalysis if we're actually analyzing or have results */}
+					{(isAnalyzing || result) && (
+						<StreamingAnalysis
+							key={streamKey}
+							text={text}
+							onComplete={handleStreamComplete}
+							onError={handleStreamError}
+							abortController={abortControllerRef.current}
+						/>
+					)}
+				</Card>
+			)}
+		</div>
+	);
+}

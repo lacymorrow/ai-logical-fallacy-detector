@@ -116,6 +116,7 @@
     "@types/dompurify": "^3.2.0",
     "@types/file-saver": "^2.0.7",
     "@types/marked": "^6.0.0",
+    "@types/react-dom": "^19.0.4",
     "@types/ws": "^8.5.14",
     "@uidotdev/usehooks": "2.4.1",
     "@upstash/ratelimit": "^2.0.5",
