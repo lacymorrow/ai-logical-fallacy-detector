@@ -1,0 +1,173 @@
+# Logical Fallacy Detector API Documentation
+
+## Overview
+
+The Logical Fallacy Detector API provides endpoints for analyzing text and identifying logical fallacies. It uses OpenAI's GPT-4 model to detect various types of logical fallacies and provides detailed explanations and confidence scores.
+
+## Base URL
+
+```
+/api
+```
+
+## Endpoints
+
+### Analyze Fallacies
+
+Analyzes text for logical fallacies.
+
+```
+POST /api/analyze-fallacies
+```
+
+#### Request
+
+**Headers**
+```json
+{
+  "Content-Type": "application/json"
+}
+```
+
+**Body**
+```json
+{
+  "text": string // Required: The text to analyze (1-5000 characters)
+}
+```
+
+#### Response
+
+**200 OK**
+```json
+{
+  "text": string,        // The original text
+  "fallacies": [        // Array of detected fallacies
+    {
+      "type": string,   // The type of fallacy (e.g., "AD_HOMINEM")
+      "description": string, // Brief description of the fallacy
+      "startIndex": number, // Start index in the text
+      "endIndex": number,   // End index in the text
+      "explanation": string, // Detailed explanation
+      "confidence": number  // Confidence score (0-1)
+    }
+  ],
+  "analysisId": string, // Unique ID for this analysis
+  "timestamp": string   // ISO timestamp
+}
+```
+
+**400 Bad Request**
+```json
+{
+  "error": "Invalid request data",
+  "details": [
+    {
+      "code": string,
+      "message": string,
+      "path": string[]
+    }
+  ]
+}
+```
+
+**429 Too Many Requests**
+```json
+{
+  "error": "Too many requests",
+  "limit": number,    // Rate limit
+  "reset": number,    // Timestamp when the rate limit resets
+  "remaining": number // Remaining requests
+}
+```
+
+**500 Internal Server Error**
+```json
+{
+  "error": "Failed to analyze text"
+}
+```
+
+#### Rate Limiting
+
+The API is rate-limited to prevent abuse:
+- 10 requests per minute per IP address
+- Rate limit headers are included in responses:
+  - `X-RateLimit-Limit`: Maximum requests per window
+  - `X-RateLimit-Remaining`: Remaining requests in current window
+  - `X-RateLimit-Reset`: Timestamp when the rate limit resets
+
+## Fallacy Types
+
+The API can detect the following types of logical fallacies:
+
+| Type | Description |
+|------|-------------|
+| AD_HOMINEM | Attacking the person instead of their argument |
+| STRAW_MAN | Misrepresenting an opponent's argument |
+| FALSE_EQUIVALENCE | Drawing a comparison between two different things |
+| APPEAL_TO_AUTHORITY | Using an authority's opinion as evidence |
+| SLIPPERY_SLOPE | Arguing that one event leads to a chain of negative events |
+| FALSE_DICHOTOMY | Presenting only two options when others exist |
+| CIRCULAR_REASONING | Using the conclusion to support the premises |
+| HASTY_GENERALIZATION | Drawing conclusions from insufficient evidence |
+| APPEAL_TO_EMOTION | Using emotions instead of logic |
+| RED_HERRING | Introducing irrelevant information to distract |
+
+## Example Usage
+
+**Request**
+```bash
+curl -X POST http://localhost:3000/api/analyze-fallacies \
+  -H "Content-Type: application/json" \
+  -d '{"text": "You cannot trust his economic policy because he has never run a business."}'
+```
+
+**Response**
+```json
+{
+  "text": "You cannot trust his economic policy because he has never run a business.",
+  "fallacies": [
+    {
+      "type": "AD_HOMINEM",
+      "description": "Personal attack instead of addressing the argument",
+      "startIndex": 0,
+      "endIndex": 63,
+      "explanation": "The argument attacks the person's lack of business experience rather than addressing the merits of the economic policy itself.",
+      "confidence": 0.95
+    }
+  ],
+  "analysisId": "abc123",
+  "timestamp": "2024-02-22T12:34:56.789Z"
+}
+```
+
+## Error Handling
+
+The API uses standard HTTP status codes and includes detailed error messages in the response body. Common error scenarios:
+
+- Invalid input (400)
+- Rate limit exceeded (429)
+- Server errors (500)
+
+## Best Practices
+
+1. **Input Validation**
+   - Validate text length (1-5000 characters)
+   - Remove unnecessary whitespace
+   - Handle special characters appropriately
+
+2. **Rate Limiting**
+   - Implement client-side rate limiting
+   - Cache responses when possible
+   - Handle rate limit errors gracefully
+
+3. **Error Handling**
+   - Implement proper error handling
+   - Display user-friendly error messages
+   - Log errors for debugging
+
+4. **Performance**
+   - Keep requests small
+   - Implement caching where appropriate
+   - Consider using streaming for long texts

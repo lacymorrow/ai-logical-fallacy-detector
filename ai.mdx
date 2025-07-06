@@ -1,0 +1,197 @@
+# AI Logical Fallacy Detector Project Plan
+
+## Project Overview
+Building a logical fallacy detector that can analyze text and annotate instances of logical fallacies in real-time. The project will be developed in phases, starting with text analysis and progressing to real-time video analysis.
+
+## Current State
+The fallacy detector now features a button-triggered analysis with streaming results. This approach prevents multiple simultaneous API calls while still providing a responsive user experience. The user enters text, clicks the "Analyze Text" button, and sees results stream in as they become available. This design ensures better resource utilization and prevents token waste from abandoned or overlapping requests.
+
+The streaming analysis has been optimized to provide a stable UI experience:
+- Updates are batched and debounced to prevent UI flickering
+- Existing annotations remain stable when new fallacies are detected
+- Animations are only applied to newly detected fallacies
+- Server-side updates are limited to once per second to reduce unnecessary re-renders
+
+These improvements ensure that the UI remains stable during analysis, with underlines and colors maintaining their position and only updating when necessary.
+
+## Phase 1: Text Analysis MVP
+- [x] Set up project structure and dependencies
+  - [x] Create types for fallacy detection
+  - [x] Create fallacy detection service
+  - [x] Set up API route
+- [x] Create core components
+  - [x] Text input component
+  - [x] Analysis results display component
+  - [x] Fallacy annotation component
+- [x] Implement fallacy detection logic
+  - [x] Define fallacy types and patterns
+  - [x] Create analysis service with OpenAI integration
+  - [x] Implement annotation formatting
+- [x] Build UI
+  - [x] Create responsive layout
+  - [x] Add loading states
+  - [x] Style annotations
+- [x] Add error handling and validation
+  - [x] Input validation with Zod
+  - [x] API error handling with toast notifications
+  - [x] Rate limiting with in-memory storage
+- [x] Add testing
+  - [x] Unit tests for fallacy detection service
+  - [x] Integration tests for API
+  - [x] UI component tests
+- [x] Add documentation
+  - [x] API documentation
+  - [x] Component documentation
+  - [x] Usage examples
+- [x] Performance optimization
+  - [x] Add streaming support for analysis results
+  - [x] Add caching with in-memory storage
+  - [x] Optimize OpenAI prompt
+
+## Phase 2: Enhanced Features (Future)
+- [x] Streaming analysis capabilities
+  - [x] Implement streaming responses
+  - [x] Add streaming feedback UI
+  - [x] Optimize streaming performance
+  - [x] Prevent multiple simultaneous API calls
+  - [x] Improve UI stability during streaming updates
+- [ ] Video input support
+  - [ ] Add video upload/URL input
+- [ ] Speech-to-text integration
+  - [ ] Add audio input support
+  - [ ] Implement speech recognition
+  - [ ] Real-time speech analysis
+- [ ] Real-time annotation overlay
+  - [ ] Create overlay component
+  - [ ] Add timestamp synchronization
+  - [ ] Implement smooth transitions
+- [ ] Export and sharing features
+  - [ ] Add export to PDF/markdown
+  - [ ] Implement share links
+  - [ ] Add collaboration features
+
+## Technical Stack
+- Next.js App Router
+- Vercel AI SDK
+- OpenAI API
+- Shadcn/UI
+- Tailwind CSS
+- TypeScript
+- In-memory caching and rate limiting
+- Sonner for toast notifications
+- Vitest for testing
+- Server-Sent Events for streaming
+- Framer Motion for animations
+
+## Current Focus
+1. Video Analysis Support:
+   - Implement video upload/URL input
+   - Add video transcription service
+   - Design real-time video analysis UI
+
+2. Speech-to-Text Integration:
+   - Research speech recognition APIs
+   - Design audio input interface
+   - Plan real-time speech analysis
+
+3. Export and Sharing:
+   - Design export formats
+   - Implement share functionality
+   - Add collaboration features
+
+## Implementation Notes
+- Using in-memory caching with TTL and cleanup
+- Implemented streaming UI with progressive loading
+- Enhanced OpenAI prompt with confidence scoring
+- Using Framer Motion for smooth animations
+- Implemented cache monitoring and statistics
+- Following accessibility best practices
+- Optimizing for performance with React Server Components
+- Using in-memory rate limiting
+- Comprehensive test coverage with Vitest
+- Server-Sent Events for streaming responses
+- Removed real-time analysis to prevent multiple API calls
+- Implemented controlled streaming with abort controller
+- Ensured only one analysis can run at a time
+- Fixed duplicate results in streaming by tracking processed fallacies
+- Added final result markers to improve completion handling
+
+## Next Steps
+1. Implement video upload component
+2. Add video transcription service
+3. Design video analysis UI
+4. Research speech recognition APIs
+5. Plan export functionality
+6. Design sharing features
+
+## Security Notes
+- API keys are stored securely in environment variables
+- Rate limiting is implemented to prevent abuse
+- Input validation is in place
+- Error handling follows security best practices
+- Proper CORS configuration is set up
+- Cache keys are hashed for security
+
+## Scaling Considerations
+- Current in-memory caching suitable for development and small deployments
+- For production scaling, consider:
+  - Implementing Redis or similar for distributed caching
+  - Using a proper rate limiting service
+  - Adding load balancing support
+  - Implementing proper session management
+
+# AI Logical Fallacy Detector - Development Log
+
+## Issues Fixed
+
+### [x] Fixed Duplicate Streams in Fallacy Detector
+
+**Problem:** When clicking the "Analyze Text" button, two separate API streams were being created, causing duplicate requests and potential race conditions.
+
+**Root Cause:** React's StrictMode in development causes components to mount, unmount, and remount to help catch bugs. This was causing the `useEffect` in the `StreamingAnalysis` component to run twice, creating two separate streams.
+
+**Solution:**
+1. Refactored `StreamingAnalysis` component to use a ref (`hasStartedAnalysisRef`) instead of state to track if analysis has started
+2. Added a local reference to the abort controller to ensure we're using the latest one
+3. Added a key to the `StreamingAnalysis` component in the parent to force remount when needed
+4. Improved cleanup logic to prevent duplicate streams
+
+**Files Modified:**
+- `src/components/fallacy-detector/streaming-analysis.tsx`
+- `src/components/fallacy-detector/fallacy-detector.tsx`
+- `src/app/fallacy-detector/page.tsx` (fixed linter errors)
+
+**Technical Details:**
+- Used refs instead of state for tracking stream status to avoid React StrictMode issues
+- Added a key to force component remount when starting a new analysis
+- Improved cleanup logic to ensure proper resource management
+- Fixed TypeScript linter errors in page component
+
+### [x] Fixed Duplicate Toast Notifications
+
+**Problem:** Success toast notifications were appearing twice when analysis completed.
+
+**Root Cause:** The `onComplete` callback was being called multiple times due to the way the stream completion was handled in the `StreamingAnalysis` component.
+
+**Solution:**
+1. Added a ref (`hasCalledCompleteRef`) to track if we've already called the `onComplete` callback
+2. Created a safe wrapper function (`safelyCallOnComplete`) to ensure the callback is only called once
+3. Improved toast management in the `FallacyDetector` component by tracking toast IDs
+4. Added proper cleanup of toasts when starting a new analysis or when errors occur
+
+**Files Modified:**
+- `src/components/fallacy-detector/streaming-analysis.tsx`
+- `src/components/fallacy-detector/fallacy-detector.tsx`
+
+**Technical Details:**
+- Used refs to track completion state across re-renders
+- Added proper toast ID management to prevent duplicate notifications
+- Implemented cleanup logic for toasts to ensure a clean UI experience
+- Used `useCallback` to memoize handlers and prevent unnecessary re-renders
+
+## Pending Tasks
+
+- [ ] Add comprehensive error handling for network failures
+- [ ] Implement retry logic for failed API requests
+- [ ] Add unit tests for the streaming analysis component
+- [ ] Consider adding a timeout for long-running analyses
