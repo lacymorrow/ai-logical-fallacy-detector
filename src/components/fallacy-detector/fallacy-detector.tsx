@@ -3,17 +3,19 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import type { AnalysisResult } from "@/types/fallacy";
 import type * as React from "react";
 import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
 import { StreamingAnalysis } from "./streaming-analysis";
-import { Loader2 } from "lucide-react";
+import { Loader2, ChevronDown, ChevronUp } from "lucide-react";
 
 export function FallacyDetector() {
 	const [text, setText] = useState("");
 	const [isAnalyzing, setIsAnalyzing] = useState(false);
 	const [result, setResult] = useState<AnalysisResult | null>(null);
+	const [isInputOpen, setIsInputOpen] = useState(true);
 	const abortControllerRef = useRef<AbortController | null>(null);
 	// Ref to track if we're currently rendering the StreamingAnalysis component
 	const isStreamingRef = useRef(false);
@@ -124,6 +126,9 @@ export function FallacyDetector() {
 		activeToastRef.current = toast.success(
 			`Analysis complete! Found ${fallacyCount} logical ${fallacyCount === 1 ? 'fallacy' : 'fallacies'}.`
 		);
+
+		// Collapse the input section when analysis completes successfully
+		setIsInputOpen(false);
 	}, []);
 
 	const handleStreamError = useCallback((error: Error) => {
@@ -137,45 +142,61 @@ export function FallacyDetector() {
 	return (
 		<div className="mx-auto max-w-4xl space-y-6">
 			<Card className="p-6">
-				<h2 className="mb-4 text-2xl font-bold">BS Detector</h2>
-				<p className="mb-4 text-sm text-muted-foreground">Find logical fallacies in anything. Try pasting news, speeches, arguments, or anything else.</p>
-				<div className="space-y-4">
-					<Textarea
-						placeholder={`Enter any text to analyze for logical fallacies... (minimum ${MIN_TEXT_LENGTH} characters)`}
-						value={text}
-						onChange={handleTextChange}
-						className="min-h-[200px]"
-					/>
-					<div className="flex justify-end">
-						<Button
-							onClick={analyzeText}
-							disabled={isAnalyzing || text.length < MIN_TEXT_LENGTH}
-							className="min-w-[120px]"
-						>
-							{isAnalyzing ? <span className="flex items-center gap-2"><Loader2 className="animate-spin" /> Analyzing...</span> : "Analyze Text"}
-						</Button>
+				<Collapsible open={isInputOpen} onOpenChange={setIsInputOpen}>
+					<div className="flex items-center justify-between mb-4">
+						<h2 className="text-2xl font-bold">BS Detector</h2>
+						{/* Only show the collapse trigger if we have results */}
+						{result && (
+							<CollapsibleTrigger asChild>
+								<Button variant="ghost" size="sm" className="p-0 h-9 w-9">
+									{isInputOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+									<span className="sr-only">{isInputOpen ? "Close" : "Open"} input section</span>
+								</Button>
+							</CollapsibleTrigger>
+						)}
 					</div>
-				</div>
 
-				<div className="mt-4 border-t pt-4">
-					<h3 className="mb-2 text-lg font-semibold">Try an example:</h3>
-					<div className="flex flex-wrap gap-2">
-						{examples.map((example, index) => (
-							<Button
-								key={index}
-								variant="outline"
-								size="sm"
-								onClick={() => {
-									setText(example);
-									analyzeText();
-								}}
-								disabled={isAnalyzing}
-							>
-								{example.substring(0, 30)}...
-							</Button>
-						))}
-					</div>
-				</div>
+					<CollapsibleContent className="space-y-4">
+						<p className="mb-4 text-sm text-muted-foreground">Find logical fallacies in anything. Try pasting news, speeches, arguments, or anything else.</p>
+						<div className="space-y-4">
+							<Textarea
+								placeholder={`Enter any text to analyze for logical fallacies... (minimum ${MIN_TEXT_LENGTH} characters)`}
+								value={text}
+								onChange={handleTextChange}
+								className="min-h-[200px]"
+							/>
+							<div className="flex justify-end">
+								<Button
+									onClick={analyzeText}
+									disabled={isAnalyzing || text.length < MIN_TEXT_LENGTH}
+									className="min-w-[120px]"
+								>
+									{isAnalyzing ? <span className="flex items-center gap-2"><Loader2 className="animate-spin" /> Analyzing...</span> : "Analyze Text"}
+								</Button>
+							</div>
+						</div>
+
+						<div className="mt-4 border-t pt-4">
+							<h3 className="mb-2 text-lg font-semibold">Try an example:</h3>
+							<div className="flex flex-wrap gap-2">
+								{examples.map((example, index) => (
+									<Button
+										key={index}
+										variant="outline"
+										size="sm"
+										onClick={() => {
+											setText(example);
+											analyzeText();
+										}}
+										disabled={isAnalyzing}
+									>
+										{example.substring(0, 30)}...
+									</Button>
+								))}
+							</div>
+						</div>
+					</CollapsibleContent>
+				</Collapsible>
 			</Card>
 
 			{(isAnalyzing || result) && (
