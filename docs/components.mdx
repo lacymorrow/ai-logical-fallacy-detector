@@ -1,0 +1,238 @@
+# Logical Fallacy Detector Components
+
+## Overview
+
+The Logical Fallacy Detector consists of several React components that work together to provide a user-friendly interface for analyzing text and displaying detected logical fallacies.
+
+## Components
+
+### FallacyDetector
+
+The main component that provides the user interface for text analysis.
+
+```tsx
+import { FallacyDetector } from "@/components/fallacy-detector/fallacy-detector";
+
+// Usage
+<FallacyDetector />
+```
+
+#### Features
+
+- Text input for analysis
+- Real-time analysis feedback
+- Highlighted fallacy annotations
+- Interactive tooltips with explanations
+- Error handling with toast notifications
+- Rate limit handling
+- Loading states
+
+#### Example
+
+```tsx
+import { FallacyDetector } from "@/components/fallacy-detector/fallacy-detector";
+
+export default function AnalysisPage() {
+  return (
+    <main className="container mx-auto py-8">
+      <FallacyDetector />
+    </main>
+  );
+}
+```
+
+### FallacyAnnotation
+
+A subcomponent that displays annotated fallacies with interactive tooltips.
+
+```tsx
+interface FallacyAnnotationProps {
+  fallacy: LogicalFallacy;
+  isHovered: boolean;
+  onHover: (fallacy: LogicalFallacy | null) => void;
+}
+```
+
+#### Props
+
+- `fallacy`: The logical fallacy to display
+  - `type`: Type of fallacy (e.g., AD_HOMINEM)
+  - `description`: Brief description
+  - `startIndex`: Start position in text
+  - `endIndex`: End position in text
+  - `explanation`: Detailed explanation
+  - `confidence`: Confidence score (0-1)
+- `isHovered`: Whether the annotation is currently hovered
+- `onHover`: Callback for hover state changes
+
+#### Visual States
+
+The component uses different styles based on the confidence level:
+- High confidence (>0.8): Red underline
+- Medium confidence (0.6-0.8): Orange underline
+- Low confidence (<0.6): Yellow underline
+
+#### Example
+
+```tsx
+<FallacyAnnotation
+  fallacy={{
+    type: FallacyType.AdHominem,
+    description: "Personal attack",
+    startIndex: 0,
+    endIndex: 20,
+    explanation: "Attacks the person rather than the argument",
+    confidence: 0.9,
+  }}
+  isHovered={false}
+  onHover={(fallacy) => console.log("Hover state changed:", fallacy)}
+/>
+```
+
+## Styling
+
+The components use Tailwind CSS for styling and are designed to be responsive and accessible. Key style features include:
+
+- Responsive layout with max-width containers
+- Dark mode support
+- Hover and focus states
+- Accessible color contrast
+- Loading state animations
+- Toast notifications
+
+### CSS Classes
+
+```css
+/* Container */
+.mx-auto.max-w-4xl.space-y-6.p-6
+
+/* Input area */
+.min-h-[200px]
+
+/* Annotation styles */
+.relative.cursor-pointer.underline.decoration-2.decoration-wavy
+.decoration-red-500    /* High confidence */
+.decoration-orange-500 /* Medium confidence */
+.decoration-yellow-500 /* Low confidence */
+
+/* Tooltip */
+.absolute.bottom-full.left-0.z-50.mb-2.w-64.rounded-lg.bg-white.p-4.shadow-lg
+```
+
+## Accessibility
+
+The components follow accessibility best practices:
+
+- Proper ARIA labels
+- Keyboard navigation support
+- Focus management
+- Color contrast compliance
+- Screen reader support
+
+## Error Handling
+
+The component includes comprehensive error handling:
+
+1. Input Validation
+   - Empty text check
+   - Length limits
+   - Special character handling
+
+2. API Errors
+   - Network errors
+   - Rate limiting
+   - Server errors
+
+3. User Feedback
+   - Toast notifications
+   - Loading states
+   - Error messages
+
+## Usage Examples
+
+### Basic Usage
+
+```tsx
+import { FallacyDetector } from "@/components/fallacy-detector/fallacy-detector";
+
+export default function AnalysisPage() {
+  return (
+    <div className="container mx-auto py-8">
+      <h1 className="text-3xl font-bold mb-6">
+        Analyze Text for Logical Fallacies
+      </h1>
+      <FallacyDetector />
+    </div>
+  );
+}
+```
+
+### With Custom Container
+
+```tsx
+import { FallacyDetector } from "@/components/fallacy-detector/fallacy-detector";
+
+export default function CustomAnalysisPage() {
+  return (
+    <div className="bg-gray-50 min-h-screen py-12">
+      <div className="container mx-auto px-4">
+        <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-8">
+          <h1 className="text-3xl font-bold mb-6">
+            Logical Fallacy Analysis
+          </h1>
+          <FallacyDetector />
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+## Best Practices
+
+1. **Component Placement**
+   - Place in a container with appropriate padding
+   - Consider the surrounding context
+   - Maintain consistent spacing
+
+2. **Error Handling**
+   - Always handle API errors
+   - Provide clear user feedback
+   - Implement proper loading states
+
+3. **Performance**
+   - Avoid unnecessary re-renders
+   - Implement proper memoization
+   - Handle large text inputs efficiently
+
+4. **Accessibility**
+   - Maintain keyboard navigation
+   - Provide proper ARIA labels
+   - Ensure color contrast
+   - Support screen readers
+
+## Testing
+
+The components include comprehensive tests:
+
+```tsx
+// Component tests
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { FallacyDetector } from "./fallacy-detector";
+
+describe("FallacyDetector", () => {
+  it("renders correctly", () => {
+    render(<FallacyDetector />);
+    expect(screen.getByText("Logical Fallacy Detector")).toBeInTheDocument();
+  });
+
+  it("handles text input", async () => {
+    render(<FallacyDetector />);
+    const input = screen.getByPlaceholderText(
+      "Enter text to analyze for logical fallacies..."
+    );
+    fireEvent.change(input, { target: { value: "Test text" } });
+    // ... additional test cases
+  });
+});
+```
