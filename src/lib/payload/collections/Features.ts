@@ -41,8 +41,8 @@ export const Features: CollectionConfig = {
       hasMany: true,
       options: [
         { label: "Bones", value: "bones" },
-        { label: "Muscles", value: "muscles" },
         { label: "Brains", value: "brains" },
+        { label: "Muscles", value: "muscles" },
       ],
     },
     {
