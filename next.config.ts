@@ -75,6 +75,15 @@ let nextConfig: NextConfig = {
 	/*
 	 * Experimental configuration
 	 */
+	serverExternalPackages: [
+		"esbuild",
+		"esbuild-register",
+		"drizzle-kit",
+		"googleapis",
+		"googleapis-common",
+		"@auth/core",
+		"@auth/drizzle-adapter",
+	],
 	experimental: {
 		// esmExternals: true,
 		// mdxRs: true,

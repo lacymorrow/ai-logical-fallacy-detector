@@ -107,10 +107,16 @@ export function KeyboardShortcutProvider({
   );
 }
 
+// No-op fallback for use outside KeyboardShortcutProvider (e.g. not-found pages)
+const noopContext: KeyboardShortcutContextProps = {
+  registerShortcut: () => () => {},
+  triggerAction: () => {},
+};
+
 export function useKeyboardShortcutContext(): KeyboardShortcutContextProps {
   const context = useContext(KeyboardShortcutContext);
   if (!context) {
-    throw new Error("useKeyboardShortcutContext must be used within a KeyboardShortcutProvider");
+    return noopContext;
   }
   return context;
 }

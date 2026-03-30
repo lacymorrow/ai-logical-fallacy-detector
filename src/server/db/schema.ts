@@ -783,3 +783,152 @@ export const guideEntryRevisionsRelations = relations(
 		}),
 	}),
 );
+
+// --- Missing tables required by upstream ShipKit references ---
+
+export const userCredits = createTable(
+	"user_credit",
+	{
+		id: varchar("id", { length: 255 })
+			.notNull()
+			.primaryKey()
+			.$defaultFn(() => crypto.randomUUID()),
+		userId: varchar("user_id", { length: 255 })
+			.notNull()
+			.unique()
+			.references(() => users.id, { onDelete: "cascade" }),
+		balance: integer("balance").notNull().default(0),
+		createdAt: timestamp("created_at", { withTimezone: true })
+			.default(sql`CURRENT_TIMESTAMP`)
+			.notNull(),
+		updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+			() => new Date(),
+		),
+	},
+	(table) => ({
+		userIdIdx: index("user_credit_user_id_idx").on(table.userId),
+	}),
+);
+
+export type UserCredit = typeof userCredits.$inferSelect;
+export type NewUserCredit = typeof userCredits.$inferInsert;
+
+export const creditTransactions = createTable(
+	"credit_transaction",
+	{
+		id: varchar("id", { length: 255 })
+			.notNull()
+			.primaryKey()
+			.$defaultFn(() => crypto.randomUUID()),
+		userId: varchar("user_id", { length: 255 })
+			.notNull()
+			.references(() => users.id, { onDelete: "cascade" }),
+		amount: integer("amount").notNull(),
+		type: varchar("type", { length: 50 }).notNull(),
+		description: text("description"),
+		metadata: text("metadata"),
+		createdAt: timestamp("created_at", { withTimezone: true })
+			.default(sql`CURRENT_TIMESTAMP`)
+			.notNull(),
+	},
+	(table) => ({
+		userIdIdx: index("credit_transaction_user_id_idx").on(table.userId),
+		typeIdx: index("credit_transaction_type_idx").on(table.type),
+	}),
+);
+
+export type CreditTransaction = typeof creditTransactions.$inferSelect;
+export type NewCreditTransaction = typeof creditTransactions.$inferInsert;
+
+export const userCreditsRelations = relations(userCredits, ({ one }) => ({
+	user: one(users, { fields: [userCredits.userId], references: [users.id] }),
+}));
+
+export const creditTransactionsRelations = relations(
+	creditTransactions,
+	({ one }) => ({
+		user: one(users, {
+			fields: [creditTransactions.userId],
+			references: [users.id],
+		}),
+	}),
+);
+
+export const deployments = createTable(
+	"deployments",
+	{
+		id: text("id")
+			.notNull()
+			.primaryKey()
+			.$defaultFn(() => crypto.randomUUID()),
+		userId: text("user_id")
+			.notNull()
+			.references(() => users.id, { onDelete: "cascade" }),
+		projectName: text("project_name").notNull(),
+		description: text("description"),
+		githubRepoUrl: text("github_repo_url"),
+		githubRepoName: text("github_repo_name"),
+		vercelProjectId: text("vercel_project_id"),
+		vercelProjectUrl: text("vercel_project_url"),
+		vercelDeploymentId: text("vercel_deployment_id"),
+		vercelDeploymentUrl: text("vercel_deployment_url"),
+		status: text("status", {
+			enum: ["deploying", "completed", "failed", "timeout"],
+		})
+			.notNull()
+			.default("deploying"),
+		error: text("error"),
+		createdAt: timestamp("created_at", { withTimezone: true })
+			.default(sql`CURRENT_TIMESTAMP`)
+			.notNull(),
+		updatedAt: timestamp("updated_at", { withTimezone: true })
+			.default(sql`CURRENT_TIMESTAMP`)
+			.notNull(),
+	},
+);
+
+export type Deployment = typeof deployments.$inferSelect;
+export type NewDeployment = typeof deployments.$inferInsert;
+
+export const deploymentsRelations = relations(deployments, ({ one }) => ({
+	user: one(users, {
+		fields: [deployments.userId],
+		references: [users.id],
+	}),
+}));
+
+export const waitlistEntries = createTable(
+	"waitlist_entry",
+	{
+		id: serial("id").primaryKey(),
+		email: varchar("email", { length: 255 }).notNull().unique(),
+		name: varchar("name", { length: 255 }).notNull(),
+		company: varchar("company", { length: 255 }),
+		role: varchar("role", { length: 100 }),
+		projectType: varchar("project_type", { length: 100 }),
+		timeline: varchar("timeline", { length: 100 }),
+		interests: text("interests"),
+		isNotified: boolean("is_notified").default(false),
+		notifiedAt: timestamp("notified_at", { withTimezone: true }),
+		source: varchar("source", { length: 50 }).default("website"),
+		metadata: text("metadata").default("{}"),
+		createdAt: timestamp("created_at", { withTimezone: true })
+			.default(sql`CURRENT_TIMESTAMP`)
+			.notNull(),
+		updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+			() => new Date(),
+		),
+	},
+	(waitlistEntry) => ({
+		emailIdx: index("waitlist_email_idx").on(waitlistEntry.email),
+		createdAtIdx: index("waitlist_created_at_idx").on(
+			waitlistEntry.createdAt,
+		),
+		isNotifiedIdx: index("waitlist_is_notified_idx").on(
+			waitlistEntry.isNotified,
+		),
+	}),
+);
+
+export type WaitlistEntry = typeof waitlistEntries.$inferSelect;
+export type NewWaitlistEntry = typeof waitlistEntries.$inferInsert;

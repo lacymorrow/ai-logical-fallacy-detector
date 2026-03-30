@@ -1,10 +1,11 @@
+export const dynamic = "force-dynamic";
+
 import { redirect } from "next/navigation";
 import { type ReactNode, Suspense } from "react";
 import { SuspenseFallback } from "@/components/primitives/suspense-fallback";
 import { Separator } from "@/components/ui/separator";
 import { SidebarNav } from "@/components/ui/sidebar-nav";
 import { routes } from "@/config/routes";
-import { auth } from "@/server/auth";
 import { Header } from "../../../components/headers/header";
 
 const sidebarNavItems = [
@@ -31,6 +32,7 @@ interface SettingsLayoutProps {
 }
 
 export default async function SettingsLayout({ children }: SettingsLayoutProps) {
+  const { auth } = await import("@/server/auth");
   const session = await auth();
 
   if (!session) {
