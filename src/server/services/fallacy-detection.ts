@@ -64,7 +64,7 @@ export async function analyzeFallacies(text: string): Promise<AnalysisResult> {
 		console.log("Cache miss, performing analysis");
 
 		const completion = await openai.chat.completions.create({
-			model: "gpt-4-turbo-preview",
+			model: "gpt-4o",
 			messages: [
 				{ role: "system", content: SYSTEM_PROMPT },
 				{
@@ -123,7 +123,7 @@ export async function* streamAnalyzeFallacies(
 	try {
 		console.log("Starting streaming fallacy analysis");
 		const stream = await openai.chat.completions.create({
-			model: "gpt-4-turbo-preview",
+			model: "gpt-4o",
 			messages: [
 				{ role: "system", content: SYSTEM_PROMPT },
 				{
