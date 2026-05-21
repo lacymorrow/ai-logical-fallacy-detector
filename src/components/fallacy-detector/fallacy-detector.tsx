@@ -56,13 +56,15 @@ export function FallacyDetector() {
 		setText(newText);
 	};
 
-	const analyzeText = async () => {
-		if (!text.trim()) {
+	const analyzeText = async (overrideText?: string) => {
+		const textToAnalyze = overrideText ?? text;
+
+		if (!textToAnalyze.trim()) {
 			toast.error("Please enter some text to analyze");
 			return;
 		}
 
-		if (text.length < MIN_TEXT_LENGTH) {
+		if (textToAnalyze.length < MIN_TEXT_LENGTH) {
 			toast.error(`Text must be at least ${MIN_TEXT_LENGTH} characters long`);
 			return;
 		}
@@ -186,7 +188,7 @@ export function FallacyDetector() {
 										size="sm"
 										onClick={() => {
 											setText(example);
-											analyzeText();
+											analyzeText(example);
 										}}
 										disabled={isAnalyzing}
 									>
