@@ -13,6 +13,7 @@ import { Loader2, ChevronDown, ChevronUp } from "lucide-react";
 
 export function FallacyDetector() {
 	const [text, setText] = useState("");
+	const textRef = useRef(text);
 	const [isAnalyzing, setIsAnalyzing] = useState(false);
 	const [result, setResult] = useState<AnalysisResult | null>(null);
 	const [isInputOpen, setIsInputOpen] = useState(true);
@@ -51,18 +52,24 @@ export function FallacyDetector() {
 		}
 	};
 
+	const updateText = (value: string) => {
+		textRef.current = value;
+		setText(value);
+	};
+
 	const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-		const newText = e.target.value;
-		setText(newText);
+		updateText(e.target.value);
 	};
 
 	const analyzeText = async () => {
-		if (!text.trim()) {
+		const currentText = textRef.current;
+
+		if (!currentText.trim()) {
 			toast.error("Please enter some text to analyze");
 			return;
 		}
 
-		if (text.length < MIN_TEXT_LENGTH) {
+		if (currentText.length < MIN_TEXT_LENGTH) {
 			toast.error(`Text must be at least ${MIN_TEXT_LENGTH} characters long`);
 			return;
 		}
@@ -185,7 +192,7 @@ export function FallacyDetector() {
 										variant="outline"
 										size="sm"
 										onClick={() => {
-											setText(example);
+											updateText(example);
 											analyzeText();
 										}}
 										disabled={isAnalyzing}
