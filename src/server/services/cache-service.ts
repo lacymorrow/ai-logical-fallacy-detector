@@ -2,6 +2,7 @@ import { env } from "@/env";
 import { logger } from "@/lib/logger";
 import { metrics, metricsService } from "./metrics-service";
 import { redisClient as redis } from "./redis-service"; // Import the shared client
+import type { AnalysisResult } from "@/types/fallacy";
 
 export interface CacheConfig {
   ttl?: number; // Time to live in seconds
@@ -172,6 +173,17 @@ export class CacheService {
       logger.error("Failed to revalidate cache", { key, error });
       await metricsService.incrementCounter(metrics.cache.errors);
     }
+  }
+  private analysisKey(text: string): string {
+    return `analysis:${Buffer.from(text).toString("base64")}`;
+  }
+
+  async getCachedAnalysis(text: string): Promise<AnalysisResult | null> {
+    return this.get<AnalysisResult>(this.analysisKey(text));
+  }
+
+  async cacheAnalysis(text: string, result: AnalysisResult): Promise<void> {
+    await this.set(this.analysisKey(text), result, { ttl: 86400, staleWhileRevalidate: 3600 });
   }
 }
 
