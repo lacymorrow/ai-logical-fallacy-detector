@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { env } from "@/env";
 import { logger } from "@/lib/logger";
 import { metrics, metricsService } from "./metrics-service";
@@ -175,15 +176,19 @@ export class CacheService {
     }
   }
   private analysisKey(text: string): string {
-    return `analysis:${Buffer.from(text).toString("base64")}`;
+    return `analysis:${createHash("sha256").update(text).digest("hex")}`;
   }
 
   async getCachedAnalysis(text: string): Promise<AnalysisResult | null> {
-    return this.get<AnalysisResult>(this.analysisKey(text));
+    const result = await this.get<AnalysisResult>(this.analysisKey(text));
+    if (result) {
+      result.timestamp = new Date(result.timestamp);
+    }
+    return result;
   }
 
   async cacheAnalysis(text: string, result: AnalysisResult): Promise<void> {
-    await this.set(this.analysisKey(text), result, { ttl: 86400, staleWhileRevalidate: 3600 });
+    await this.set(this.analysisKey(text), result, cacheConfigs.day);
   }
 }
 
