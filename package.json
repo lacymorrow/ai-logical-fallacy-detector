@@ -394,6 +394,7 @@
       "bufferutil",
       "contentlayer",
       "core-js",
+      "cpu-features",
       "edgedriver",
       "es5-ext",
       "esbuild",
@@ -403,7 +404,9 @@
       "onnxruntime-node",
       "protobufjs",
       "puppeteer",
+      "react-grab",
       "sharp",
+      "ssh2",
       "unrs-resolver",
       "utf-8-validate"
     ]
