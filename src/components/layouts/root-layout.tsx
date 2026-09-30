@@ -41,7 +41,7 @@ export function RootLayout({ children }: { children: ReactNode }) {
 				{/* React Scan */}
 				<script src="https://unpkg.com/react-scan/dist/auto.global.js" async />
 			</Head>
-			<html lang="en" suppressHydrationWarning>
+			<html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
 				<body
 					className={cn(
 						"min-h-screen antialiased",

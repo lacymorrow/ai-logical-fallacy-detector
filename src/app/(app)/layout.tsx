@@ -54,66 +54,62 @@ export default function Layout({
   ) as [string, React.ReactNode][];
 
   return (
-    <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
-      <head>
-        <script
-          type="application/ld+json"
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: trusted internal HTML source
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
+    // This site's root layout (src/app/layout.tsx) already renders <html>/<body>;
+    // a second pair here nests them, and React's streamed Suspense swaps then fail
+    // on hydration ("Something went wrong!"). Render a wrapper instead.
+    <>
+      <script
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: trusted internal HTML source
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: siteConfig.title,
+            description: siteConfig.description,
+            url: siteConfig.url,
+            applicationCategory: "DeveloperApplication",
+            operatingSystem: "Any",
+            offers: {
+              "@type": "Offer",
+              price: "0",
+              priceCurrency: "USD",
+            },
+            author: {
+              "@type": "Person",
+              name: siteConfig.creator.name,
+              url: siteConfig.creator.url,
+            },
+            codeRepository: siteConfig.repo.url,
+            programmingLanguage: ["TypeScript", "JavaScript"],
+            runtimePlatform: "Node.js",
+            isBasedOn: {
               "@type": "SoftwareApplication",
-              name: siteConfig.title,
-              description: siteConfig.description,
-              url: siteConfig.url,
+              name: "shipkit.io",
+              url: "https://shipkit.io",
               applicationCategory: "DeveloperApplication",
-              operatingSystem: "Any",
-              offers: {
-                "@type": "Offer",
-                price: "0",
-                priceCurrency: "USD",
-              },
-              author: {
-                "@type": "Person",
-                name: siteConfig.creator.name,
-                url: siteConfig.creator.url,
-              },
-              codeRepository: siteConfig.repo.url,
-              programmingLanguage: ["TypeScript", "JavaScript"],
-              runtimePlatform: "Node.js",
-              isBasedOn: {
-                "@type": "SoftwareApplication",
-                name: "shipkit.io",
-                url: "https://shipkit.io",
-                applicationCategory: "DeveloperApplication",
-              },
-            }),
-          }}
-        />
-        {headLinkHints.map((l: HeadLinkHint) => (
-          <link key={`${l.rel}-${l.href}`} rel={l.rel} href={l.href} crossOrigin={l.crossOrigin} />
-        ))}
+            },
+          }),
+        }}
+      />
+      {headLinkHints.map((l: HeadLinkHint) => (
+        <link key={`${l.rel}-${l.href}`} rel={l.rel} href={l.href} crossOrigin={l.crossOrigin} />
+      ))}
 
-        {/* shipkit.io attribution — to fully white-label, remove:
+      {/* shipkit.io attribution — to fully white-label, remove:
             1. This <ShipkitBranding /> component (meta tags + console log)
             2. The isBasedOn block in the JSON-LD above
             3. X-Powered-By header in next.config.ts headers()
             4. "Boilerplate: shipkit.io" line in src/app/humans.txt/route.ts
             5. generator value in src/config/site-config.ts
         */}
-        <ShipkitBranding />
+      <ShipkitBranding />
 
-        {env.NEXT_PUBLIC_FEATURE_DEVTOOLS_ENABLED && (
-          <script
-            async
-            defer
-            crossOrigin="anonymous"
-            src="https://tweakcn.com/live-preview.min.js"
-          />
-        )}
-      </head>
+      {env.NEXT_PUBLIC_FEATURE_DEVTOOLS_ENABLED && (
+        <script async defer crossOrigin="anonymous" src="https://tweakcn.com/live-preview.min.js" />
+      )}
       {/* Ensure portaled UI (e.g. Radix primitives) inherits the sans-serif family */}
-      <body
+      <div
         className={`${fontSans.variable} ${fontSerif.variable} min-h-screen font-sans antialiased`}
       >
         <AppRouterLayout>
@@ -148,7 +144,7 @@ export default function Layout({
               </Suspense>
             </>
           )}
-      </body>
-    </html>
+      </div>
+    </>
   );
 }
