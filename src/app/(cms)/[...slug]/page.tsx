@@ -1,13 +1,4 @@
-/**
- * Unified CMS catch-all (Payload CMS + Builder.io).
- *
- * This lives under (app), not (cms), on purpose. The (cms) layout wraps its
- * children in Payload's admin RootLayout, which streams its shell and commits
- * HTTP 200 before this page can call notFound(), so every unknown URL became a
- * soft 404 whenever Payload was enabled (LAC-3870). The (app) root layout is
- * synchronous, so the existence decision below settles the status first.
- * Only /cms (admin UI) and /cms-api need Payload's RootLayout.
- */
+import { AppRouterLayout } from "@/components/layouts/app-router-layout";
 import { env } from "@/env";
 import { RenderBuilderContent } from "@/lib/builder-io/builder-io";
 import { getPayloadClient } from "@/lib/payload/payload";
@@ -18,7 +9,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import type { PageBlock } from "@/types/blocks";
-import { BlockRenderer } from "@/app/(cms)/payload-blocks";
+import { BlockRenderer } from "../payload-blocks";
 
 if (env.NEXT_PUBLIC_FEATURE_BUILDER_ENABLED && env.NEXT_PUBLIC_BUILDER_API_KEY) {
   builder.init(env.NEXT_PUBLIC_BUILDER_API_KEY);
@@ -74,12 +65,12 @@ async function getPageData(
   { source: "payload"; data: PayloadPage } | { source: "builder"; data: BuilderContent } | null
 > {
   if (!env.NEXT_PUBLIC_FEATURE_PAYLOAD_ENABLED && !env.NEXT_PUBLIC_FEATURE_BUILDER_ENABLED) {
-    return null;
+    return notFound();
   }
 
   const slugString = slug.join("/");
   if (shouldSkip(slugString)) {
-    return null;
+    return notFound();
   }
 
   if (env.NEXT_PUBLIC_FEATURE_PAYLOAD_ENABLED) {
@@ -114,7 +105,7 @@ async function getPageData(
       if (pageQuery?.docs[0]) {
         return { source: "payload", data: pageQuery.docs[0] };
       }
-    } catch (_error) {
+    } catch (error) {
       // Silently handle errors, as in original code
     }
   }
@@ -134,7 +125,7 @@ async function getPageData(
       if (builderContent) {
         return { source: "builder", data: builderContent };
       }
-    } catch (_error) {
+    } catch (error) {
       // Silently handle errors
     }
   }
@@ -152,11 +143,7 @@ export async function generateMetadata({
 
   const pageData = await getPageData(params.slug, 1);
   if (!pageData) {
-    // Return empty metadata — do NOT call notFound() here.
-    // Calling notFound() in generateMetadata causes Next.js to inject
-    // robots:noindex automatically, which leaks onto /docs pages due to
-    // this [...slug] catch-all overlapping with docs/[[...slug]].
-    return {};
+    return notFound();
   }
 
   if (pageData.source === "builder") {
@@ -189,7 +176,7 @@ export async function generateMetadata({
     };
   }
 
-  return {};
+  notFound();
 }
 
 export default async function Page({ params: paramsPromise }: PageProps) {
