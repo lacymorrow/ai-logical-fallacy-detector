@@ -54,7 +54,7 @@
 	--radius-sm: calc(var(--radius) - 4px);
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-lg: var(--radius);
-	--radius-xl: calc(var(--radius) + 4px);
+	--radius-xl: 0.75rem; /* pre-v4 config never overrode xl: Tailwind default */
 
 	--shadow-hairline: 0 0 0 0.5px var(--hairline), 0 1px 2px rgb(0 0 0 / 0.04);
 	--shadow-hairline-b: 0 0.5px 0 var(--hairline);
@@ -337,7 +337,9 @@
 	@media (width >= theme(--breakpoint-xl)) {
 		max-width: none;
 	}
-	@media (width >= theme(--breakpoint-2xl)) {
+	/* v3's container `screens: { '2xl': '1400px' }` was container-only; the
+	   global 2xl breakpoint stayed 1536px. Keep the 1400px trigger literal. */
+	@media (width >= 1400px) {
 		max-width: 1400px;
 	}
 }
