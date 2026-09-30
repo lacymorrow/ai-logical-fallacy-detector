@@ -1,6 +1,16 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "pnpm run build",
+  "rewrites": [
+    {
+      "source": "/ai",
+      "destination": "https://ai-offline.vercel.app/"
+    },
+    {
+      "source": "/ai/:match*",
+      "destination": "https://ai-offline.vercel.app/:match*"
+    }
+  ],
+  "buildCommand": "pnpm run build:vercel",
   "devCommand": "pnpm run dev",
   "installCommand": "pnpm install --no-frozen-lockfile",
   "framework": "nextjs",
@@ -11,8 +21,14 @@
       "dev": false
     }
   },
+  "cleanUrls": true,
+  "trailingSlash": false,
   "crons": [],
   "functions": {
+    "src/app/(app)/api/**/*": {
+      "memory": 512,
+      "excludeFiles": "{.next,*.cache,node_modules/eslint/**,node_modules/@types/**,node_modules/typescript/**,node_modules/three/**,node_modules/@react-three/**,node_modules/@huggingface/**,public,app}/**"
+    },
     "src/app/api/**/*": {
       "memory": 1024,
       "maxDuration": 10
@@ -41,5 +57,6 @@
         }
       ]
     }
-  ]
+  ],
+  "ignoreCommand": "bash scripts/vercel-ignore-step.sh"
 }

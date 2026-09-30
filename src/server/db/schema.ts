@@ -81,28 +81,34 @@ export type NewPost = typeof posts.$inferInsert;
 export type Post = typeof posts.$inferSelect;
 
 export const users = createTable("user", {
-	id: varchar("id", { length: 255 })
-		.notNull()
-		.primaryKey()
-		.$defaultFn(() => crypto.randomUUID()),
-	name: varchar("name", { length: 255 }),
-	email: varchar("email", { length: 255 }).notNull(),
-	emailVerified: timestamp("email_verified", {
-		mode: "date",
-		withTimezone: true,
-	}).default(sql`CURRENT_TIMESTAMP`),
-	image: varchar("image", { length: 255 }),
-	password: varchar("password", { length: 255 }),
-	githubUsername: varchar("github_username", { length: 255 }),
-	role: varchar("role", { length: 50 }).default("user").notNull(),
-	bio: text("bio"),
-	theme: varchar("theme", { length: 20 }).default("system"),
-	emailNotifications: boolean("email_notifications").default(true),
-	metadata: text("metadata"),
-	createdAt: timestamp("created_at", { withTimezone: true })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
-	updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }),
+  email: varchar("email", { length: 255 }).notNull().unique(),
+  emailVerified: timestamp("email_verified", {
+    mode: "date",
+    withTimezone: true,
+  }).default(sql`CURRENT_TIMESTAMP`),
+  // Better Auth models email verification as a boolean. Auth.js keeps the
+  // timestamp above; both columns stay so either strategy can read its own.
+  emailVerifiedFlag: boolean("email_verified_flag").default(false),
+  image: varchar("image", { length: 255 }),
+  password: varchar("password", { length: 255 }),
+  githubUsername: varchar("github_username", { length: 255 }),
+  role: varchar("role", { length: 50 }).default("user").notNull(),
+  bio: text("bio"),
+  theme: varchar("theme", { length: 20 }).default("system"),
+  // Site-only: emailNotifications toggle read by server/auth.config.ts and
+  // settings/preferences.
+  emailNotifications: boolean("email_notifications").default(true),
+  metadata: text("metadata"),
+  vercelConnectionAttemptedAt: timestamp("vercel_connection_attempted_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
 });
 
 export type NewUser = typeof users.$inferInsert;
@@ -140,28 +146,37 @@ export const usersRelations = relations(users, ({ many }) => ({
 }));
 
 export const accounts = createTable(
-	"account",
-	{
-		userId: text("userId")
-			.notNull()
-			.references(() => users.id, { onDelete: "cascade" }),
-		type: text("type").$type<AdapterAccountType>().notNull(),
-		provider: text("provider").notNull(),
-		providerAccountId: text("providerAccountId").notNull(),
-		refresh_token: text("refresh_token"),
-		access_token: text("access_token"),
-		expires_at: integer("expires_at"),
-		token_type: text("token_type"),
-		scope: text("scope"),
-		id_token: text("id_token"),
-		session_state: text("session_state"),
-	},
-	(account) => ({
-		compoundKey: primaryKey({
-			columns: [account.provider, account.providerAccountId],
-		}),
-		userIdIdx: index("account_user_id_idx").on(account.userId),
-	})
+  "account",
+  {
+    userId: text("userId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    type: text("type").$type<AdapterAccountType>().notNull(),
+    provider: text("provider").notNull(),
+    providerAccountId: text("providerAccountId").notNull(),
+    refresh_token: text("refresh_token"),
+    access_token: text("access_token"),
+    expires_at: integer("expires_at"),
+    token_type: text("token_type"),
+    scope: text("scope"),
+    id_token: text("id_token"),
+    session_state: text("session_state"),
+    // Better Auth columns. Nullable so existing Auth.js rows are untouched.
+    // providerId/accountId/accessToken/refreshToken/idToken map onto the
+    // Auth.js columns above; these are the ones Auth.js has no home for.
+    id: varchar("id", { length: 255 }),
+    accessTokenExpiresAt: timestamp("access_token_expires_at", { withTimezone: true }),
+    refreshTokenExpiresAt: timestamp("refresh_token_expires_at", { withTimezone: true }),
+    password: text("password"),
+    createdAt: timestamp("created_at", { withTimezone: true }),
+    updatedAt: timestamp("updated_at", { withTimezone: true }),
+  },
+  (account) => ({
+    compoundKey: primaryKey({
+      columns: [account.provider, account.providerAccountId],
+    }),
+    userIdIdx: index("account_user_id_idx").on(account.userId),
+  })
 );
 
 export const accountsRelations = relations(accounts, ({ one }) => ({
@@ -169,11 +184,18 @@ export const accountsRelations = relations(accounts, ({ one }) => ({
 }));
 
 export const sessions = createTable("session", {
-	sessionToken: text("sessionToken").primaryKey(),
-	userId: text("userId")
-		.notNull()
-		.references(() => users.id, { onDelete: "cascade" }),
-	expires: timestamp("expires", { mode: "date" }).notNull(),
+  sessionToken: text("sessionToken").primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  expires: timestamp("expires", { mode: "date" }).notNull(),
+  // Better Auth columns. Its `token` maps onto sessionToken and `expiresAt`
+  // onto expires; the rest are nullable extras Auth.js never writes.
+  id: varchar("id", { length: 255 }),
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at", { withTimezone: true }),
+  updatedAt: timestamp("updated_at", { withTimezone: true }),
 });
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -181,17 +203,22 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
 }));
 
 export const verificationTokens = createTable(
-	"verificationToken",
-	{
-		identifier: text("identifier").notNull(),
-		token: text("token").notNull(),
-		expires: timestamp("expires", { mode: "date" }).notNull(),
-	},
-	(verificationToken) => ({
-		compositePk: primaryKey({
-			columns: [verificationToken.identifier, verificationToken.token],
-		}),
-	})
+  "verificationToken",
+  {
+    identifier: text("identifier").notNull(),
+    token: text("token").notNull(),
+    expires: timestamp("expires", { mode: "date" }).notNull(),
+    // Better Auth columns. Its `value` maps onto token and `expiresAt` onto
+    // expires; these are nullable extras Auth.js never writes.
+    id: varchar("id", { length: 255 }),
+    createdAt: timestamp("created_at", { withTimezone: true }),
+    updatedAt: timestamp("updated_at", { withTimezone: true }),
+  },
+  (verificationToken) => ({
+    compositePk: primaryKey({
+      columns: [verificationToken.identifier, verificationToken.token],
+    }),
+  })
 );
 
 export const authenticators = createTable(

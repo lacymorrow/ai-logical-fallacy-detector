@@ -1,9 +1,10 @@
-import type { Buffer } from "buffer";
-import { readdir, stat } from "fs/promises";
+import type { Buffer } from "node:buffer";
+import { readdir, stat } from "node:fs/promises";
+import { join } from "node:path";
 import type { MetadataRoute } from "next";
-import { join } from "path";
 import { routes } from "@/config/routes";
 import { siteConfig } from "@/config/site-config";
+import { changelogManifest } from "@/lib/generated/changelog-manifest";
 
 interface ContentFile {
   slug: string;
@@ -41,7 +42,7 @@ async function getContentFiles(contentDir: string): Promise<ContentFile[]> {
 // This function will be called at build time and can also be called on-demand
 export async function generateSitemaps() {
   // Count the number of blog posts and docs to determine sitemap splitting
-  const [blogFiles, docFiles] = await Promise.all([
+  const [_blogFiles, _docFiles] = await Promise.all([
     getContentFiles("blog"),
     getContentFiles("docs"),
   ]);
@@ -54,6 +55,10 @@ export async function generateSitemaps() {
     sitemaps.push({ id: 2 }); // Documentation
   } else {
     sitemaps.push({ id: 1 }); // Documentation (when blog is disabled)
+  }
+
+  if (changelogManifest.length > 0) {
+    sitemaps.push({ id: sitemaps.length }); // Changelog entries
   }
 
   return sitemaps;
@@ -92,17 +97,13 @@ export default async function sitemap({ id }: { id: number }): Promise<MetadataR
     },
   ];
 
-  // Example pages (medium priority)
-  const exampleRoutes = Object.values(routes.examples)
-    .filter(
-      (route): route is string => typeof route === "string" && route !== routes.examples.index
-    )
-    .map((route) => ({
-      url: `${siteConfig.url}${route}`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.7,
-    }));
+  // Changelog index
+  const changelogRoute = {
+    url: `${siteConfig.url}/changelog`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.6,
+  };
 
   // Support pages (lower priority)
   const supportRoutes = [
@@ -131,7 +132,7 @@ export default async function sitemap({ id }: { id: number }): Promise<MetadataR
   switch (id) {
     case 0:
       // Main sitemap with static routes
-      return [...marketingRoutes, ...docRoutes, ...exampleRoutes, ...supportRoutes];
+      return [...marketingRoutes, ...docRoutes, changelogRoute, ...supportRoutes];
     case 1: {
       // Blog posts sitemap (only when blog is enabled)
       if (process.env.NEXT_PUBLIC_HAS_BLOG !== "true") {
@@ -184,7 +185,22 @@ export default async function sitemap({ id }: { id: number }): Promise<MetadataR
       );
       return docsRoutes;
     }
-    default:
+    default: {
+      // Changelog sitemap (last segment, dynamic ID based on blog config)
+      if (changelogManifest.length > 0) {
+        const changelogId = process.env.NEXT_PUBLIC_HAS_BLOG === "true" ? 3 : 2;
+        if (id === changelogId) {
+          return changelogManifest.map((entry) => ({
+            url: `${siteConfig.url}/changelog/${(entry.frontmatter.slug as string | undefined) ?? entry.filename.replace(/\.(mdx?|md)$/, "")}`,
+            lastModified: entry.frontmatter.publishedAt
+              ? new Date(entry.frontmatter.publishedAt as string)
+              : new Date(),
+            changeFrequency: "monthly" as const,
+            priority: 0.5,
+          }));
+        }
+      }
       return [];
+    }
   }
 }
