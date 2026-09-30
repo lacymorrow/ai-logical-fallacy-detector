@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
-import { SuspenseFallback } from "@/components/primitives/suspense-fallback";
 import { isHolocronProvider } from "@/config/docs-provider";
 import { constructMetadata } from "@/config/metadata";
 import { siteConfig } from "@/config/site-config";
@@ -71,9 +69,7 @@ export default async function DocsPage({ params }: PageProps) {
 
   return (
     <article className="docs-content">
-      <Suspense fallback={<SuspenseFallback />}>
-        <MDXContent components={getMDXComponents({})} />
-      </Suspense>
+      <MDXContent components={getMDXComponents({})} />
     </article>
   );
 }
