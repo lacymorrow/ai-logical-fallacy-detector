@@ -43,7 +43,8 @@ const nebulaClouds = Array.from({ length: 5 }, (_, index) => ({
 	][index % 5], // Use index instead of random to ensure consistency
 }));
 
-export const runtime = 'edge'; // Use edge runtime for better performance
+// nodejs: the edge bundle pulls in instrumentation.ts, whose evlog dynamic imports Vercel rejects on edge.
+export const runtime = 'nodejs';
 
 export async function GET(req: NextRequest) {
 	try {
