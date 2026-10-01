@@ -1,26 +1,7 @@
 import type { ReactNode } from "react";
-import { Header } from "@/components/headers/header";
-import { routes } from "@/config/routes";
 
-const navLinks = [
-  { href: routes.home, label: "Home" },
-  { href: routes.privacy, label: "Privacy" },
-  { href: routes.terms, label: "Terms" },
-  { href: routes.eula, label: "EULA" },
-  { href: routes.legal, label: "Legal" },
-];
-
-interface DocsLayoutProps {
-  children: ReactNode;
-}
-
-export default function DocsLayout({ children }: DocsLayoutProps) {
-  return (
-    <>
-      <Header navLinks={navLinks} />
-
-      {/* Content */}
-      {children}
-    </>
-  );
+// The site header (logo + theme toggle) comes from the root layout, so legal
+// pages render their content directly.
+export default function LegalLayout({ children }: { children: ReactNode }) {
+  return <>{children}</>;
 }
