@@ -19,7 +19,7 @@ import { AccountSwitcher } from "@/app/(app)/(demo)/examples/mail/components/acc
 import { MailDisplay } from "@/app/(app)/(demo)/examples/mail/components/mail-display";
 import { MailList } from "@/app/(app)/(demo)/examples/mail/components/mail-list";
 import { Nav } from "@/app/(app)/(demo)/examples/mail/components/nav";
-import type { Mail } from "@/app/(app)/(demo)/examples/mail/data";
+import type { Mail as MailData } from "@/app/(app)/(demo)/examples/mail/data";
 import { useMail } from "@/app/(app)/(demo)/examples/mail/use-mail";
 import { Input } from "@/components/ui/input";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
@@ -34,7 +34,7 @@ interface MailProps {
     email: string;
     icon: React.ReactNode;
   }[];
-  mails: Mail[];
+  mails: MailData[];
   defaultLayout: number[] | undefined;
   defaultCollapsed?: boolean;
   navCollapsedSize: number;
@@ -177,10 +177,10 @@ export function Mail({
               </TabsList>
             </div>
             <Separator />
-            <div className="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="bg-background/95 p-4 backdrop-blur-sm supports-backdrop-filter:bg-background/60">
               <form>
                 <div className="relative">
-                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Search className="absolute top-2.5 left-2 h-4 w-4 text-muted-foreground" />
                   <Input placeholder="Search" className="pl-8" />
                 </div>
               </form>

@@ -4,7 +4,6 @@ import Head from "next/head";
 import { Source_Sans_3 as FontSans, Noto_Serif as FontSerif } from "next/font/google";
 
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
-import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { TRPCReactProvider } from "@/lib/trpc/react";
 import { cn } from "@/lib/utils";
@@ -12,6 +11,7 @@ import HolyLoader from "holy-loader";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
 import { ViewTransitions } from "next-view-transitions";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Suspense, type ReactNode } from "react";
 import { PageTracker } from "react-page-tracker";
 import { WebVitals } from "../primitives/web-vitals";
@@ -41,7 +41,7 @@ export function RootLayout({ children }: { children: ReactNode }) {
 				{/* React Scan */}
 				<script src="https://unpkg.com/react-scan/dist/auto.global.js" async />
 			</Head>
-			<html lang="en" suppressHydrationWarning>
+			<html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
 				<body
 					className={cn(
 						"min-h-screen antialiased",
@@ -59,6 +59,7 @@ export function RootLayout({ children }: { children: ReactNode }) {
 					<PageTracker />
 					<SessionProvider>
 						<TRPCReactProvider>
+							<NuqsAdapter>
 							<ThemeProvider attribute="class" defaultTheme="dark">
 								<TooltipProvider delayDuration={100}>
 									<AnalyticsProvider>
@@ -76,6 +77,7 @@ export function RootLayout({ children }: { children: ReactNode }) {
 									</AnalyticsProvider>
 								</TooltipProvider>
 							</ThemeProvider>
+						</NuqsAdapter>
 						</TRPCReactProvider>
 					</SessionProvider>
 				</body>
