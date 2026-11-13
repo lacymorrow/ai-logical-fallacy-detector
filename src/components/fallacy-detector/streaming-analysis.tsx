@@ -413,7 +413,7 @@ export function StreamingAnalysis({
     for (const fallacy of currentResult.fallacies) {
       for (let i = fallacy.startIndex; i < fallacy.endIndex; i++) {
         if (i < textLength) {
-          charMap[i].push(fallacy);
+          charMap[i]?.push(fallacy);
         }
       }
     }
@@ -423,8 +423,8 @@ export function StreamingAnalysis({
     let currentSegment: { text: string; fallacies: LogicalFallacy[] } | null = null;
 
     for (let i = 0; i < textLength; i++) {
-      const char = currentResult.text[i];
-      const fallaciesAtChar = charMap[i];
+      const char = currentResult.text[i] ?? "";
+      const fallaciesAtChar = charMap[i] ?? [];
 
       // Check if we need to start a new segment
       const needNewSegment =
@@ -473,9 +473,9 @@ export function StreamingAnalysis({
             return <span key={segmentKey}>{renderFormattedText(segment.text)}</span>;
           }
 
-          if (segment.fallacies.length === 1) {
+          const [fallacy] = segment.fallacies;
+          if (segment.fallacies.length === 1 && fallacy) {
             // Text with a single fallacy
-            const fallacy = segment.fallacies[0];
             // Check if this fallacy is new
             const fallacyKey = `${fallacy.type}-${fallacy.startIndex}-${fallacy.endIndex}`;
             const isNewFallacy = !previousFallaciesRef.current.has(fallacyKey);
@@ -529,6 +529,9 @@ export function StreamingAnalysis({
     // Sort fallacies by confidence (highest first) to prioritize display
     const sortedFallacies = [...fallacies].sort((a, b) => b.confidence - a.confidence);
     const primaryFallacy = sortedFallacies[0]; // Use the highest confidence fallacy for primary styling
+    if (!primaryFallacy) {
+      return <>{text}</>;
+    }
     const isHovered = fallacies.includes(hoveredFallacy!) || fallacies.includes(stickiedFallacy!);
     const hoveredFallacyInGroup = fallacies.find((f) => f === hoveredFallacy);
 
