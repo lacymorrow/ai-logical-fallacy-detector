@@ -53,12 +53,12 @@ jobs:
       - name: Resolve conflicts using AI
         if: env.CONFLICTS_DETECTED == 'true' && env.OPENAI_API_KEY != ''
         env:
-           # Ensure this secret is set in your repository settings
-           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Pass token if script needs it
+          # Ensure this secret is set in your repository settings
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Pass token if script needs it
         run: |
-           chmod +x ./scripts/resolve-conflicts.sh
-           ./scripts/resolve-conflicts.sh
+          chmod +x ./scripts/resolve-conflicts.sh
+          ./scripts/resolve-conflicts.sh
         # This step assumes resolve-conflicts.sh exists, is executable,
         # reads OPENAI_API_KEY, resolves conflicts, and stages files (`git add`).
         # If it fails, the workflow should ideally stop here.
@@ -86,13 +86,13 @@ jobs:
 
       - name: Commit changes
         run: |
-           # Commit if there are changes (clean merge or resolved conflicts)
-           # Use the commit message determined in the previous step
-           if ! git diff --quiet || ! git diff --cached --quiet; then
-             git commit -m "${{ steps.merge_status.outputs.COMMIT_MESSAGE }}"
-           else
-             echo "No changes to commit."
-           fi
+          # Commit if there are changes (clean merge or resolved conflicts)
+          # Use the commit message determined in the previous step
+          if ! git diff --quiet || ! git diff --cached --quiet; then
+            git commit -m "${{ steps.merge_status.outputs.COMMIT_MESSAGE }}"
+          else
+            echo "No changes to commit."
+          fi
 
       - name: Push sync branch
         run: git push --set-upstream origin ${{ steps.sync_branch.outputs.name }}
@@ -102,7 +102,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: ${{ steps.merge_status.outputs.COMMIT_MESSAGE }}
-          title: 'chore: Sync with upstream ${{ env.UPSTREAM_REPO }}'
+          title: "chore: Sync with upstream ${{ env.UPSTREAM_REPO }}"
           body: |
             Automated sync with upstream repository `${{ env.UPSTREAM_REPO }}`.
 

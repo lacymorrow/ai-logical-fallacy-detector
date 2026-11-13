@@ -7,15 +7,21 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import type React from "react";
 
-export const LoginButton = ({ className, children = "Login" }: { className?: string; children?: React.ReactNode }) => {
-	const pathname = usePathname();
+export const LoginButton = ({
+  className,
+  children = "Login",
+}: {
+  className?: string;
+  children?: React.ReactNode;
+}) => {
+  const pathname = usePathname();
 
-	return (
-		<Link
-			href={`${routes.auth.signIn}?${SEARCH_PARAM_KEYS.nextUrl}=${pathname}`}
-			className={cn("hover:text-foreground", className)}
-		>
-			{children}
-		</Link>
-	);
+  return (
+    <Link
+      href={`${routes.auth.signIn}?${SEARCH_PARAM_KEYS.nextUrl}=${pathname}`}
+      className={cn("hover:text-foreground", className)}
+    >
+      {children}
+    </Link>
+  );
 };

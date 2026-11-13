@@ -97,12 +97,8 @@
           "name": "db_account_userId_db_user_id_fk",
           "tableFrom": "db_account",
           "tableTo": "db_user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -110,10 +106,7 @@
       "compositePrimaryKeys": {
         "db_account_provider_providerAccountId_pk": {
           "name": "db_account_provider_providerAccountId_pk",
-          "columns": [
-            "provider",
-            "providerAccountId"
-          ]
+          "columns": ["provider", "providerAccountId"]
         }
       },
       "uniqueConstraints": {},
@@ -198,12 +191,8 @@
           "name": "db_api_key_user_id_db_user_id_fk",
           "tableFrom": "db_api_key",
           "tableTo": "db_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -211,12 +200,8 @@
           "name": "db_api_key_project_id_db_project_id_fk",
           "tableFrom": "db_api_key",
           "tableTo": "db_project",
-          "columnsFrom": [
-            "project_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["project_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -286,12 +271,8 @@
           "name": "db_authenticator_userId_db_user_id_fk",
           "tableFrom": "db_authenticator",
           "tableTo": "db_user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -299,19 +280,14 @@
       "compositePrimaryKeys": {
         "db_authenticator_userId_credentialID_pk": {
           "name": "db_authenticator_userId_credentialID_pk",
-          "columns": [
-            "userId",
-            "credentialID"
-          ]
+          "columns": ["userId", "credentialID"]
         }
       },
       "uniqueConstraints": {
         "db_authenticator_credentialID_unique": {
           "name": "db_authenticator_credentialID_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "credentialID"
-          ]
+          "columns": ["credentialID"]
         }
       },
       "policies": {},
@@ -469,12 +445,8 @@
           "name": "db_guide_cross_reference_source_entry_id_db_guide_entry_id_fk",
           "tableFrom": "db_guide_cross_reference",
           "tableTo": "db_guide_entry",
-          "columnsFrom": [
-            "source_entry_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["source_entry_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -482,12 +454,8 @@
           "name": "db_guide_cross_reference_target_entry_id_db_guide_entry_id_fk",
           "tableFrom": "db_guide_cross_reference",
           "tableTo": "db_guide_entry",
-          "columnsFrom": [
-            "target_entry_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["target_entry_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -672,12 +640,8 @@
           "name": "db_guide_entry_category_id_db_guide_category_id_fk",
           "tableFrom": "db_guide_entry",
           "tableTo": "db_guide_category",
-          "columnsFrom": [
-            "category_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["category_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -685,12 +649,8 @@
           "name": "db_guide_entry_contributor_id_db_user_id_fk",
           "tableFrom": "db_guide_entry",
           "tableTo": "db_user",
-          "columnsFrom": [
-            "contributor_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["contributor_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -749,12 +709,8 @@
           "name": "db_guide_entry_revision_entry_id_db_guide_entry_id_fk",
           "tableFrom": "db_guide_entry_revision",
           "tableTo": "db_guide_entry",
-          "columnsFrom": [
-            "entry_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["entry_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -762,12 +718,8 @@
           "name": "db_guide_entry_revision_contributor_id_db_user_id_fk",
           "tableFrom": "db_guide_entry_revision",
           "tableTo": "db_user",
-          "columnsFrom": [
-            "contributor_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["contributor_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -838,12 +790,8 @@
           "name": "db_log_api_key_id_db_api_key_id_fk",
           "tableFrom": "db_log",
           "tableTo": "db_api_key",
-          "columnsFrom": [
-            "api_key_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["api_key_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -911,12 +859,8 @@
           "name": "db_notification_channel_user_id_db_user_id_fk",
           "tableFrom": "db_notification_channel",
           "tableTo": "db_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1009,12 +953,8 @@
           "name": "db_notification_history_user_id_db_user_id_fk",
           "tableFrom": "db_notification_history",
           "tableTo": "db_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1101,12 +1041,8 @@
           "name": "db_notification_preference_user_id_db_user_id_fk",
           "tableFrom": "db_notification_preference",
           "tableTo": "db_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1411,9 +1347,7 @@
         "db_plan_variantId_unique": {
           "name": "db_plan_variantId_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "variantId"
-          ]
+          "columns": ["variantId"]
         }
       },
       "policies": {},
@@ -1493,12 +1427,8 @@
           "name": "db_post_createdById_db_user_id_fk",
           "tableFrom": "db_post",
           "tableTo": "db_user",
-          "columnsFrom": [
-            "createdById"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["createdById"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1557,12 +1487,8 @@
           "name": "db_project_member_project_id_db_project_id_fk",
           "tableFrom": "db_project_member",
           "tableTo": "db_project",
-          "columnsFrom": [
-            "project_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["project_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -1570,12 +1496,8 @@
           "name": "db_project_member_user_id_db_user_id_fk",
           "tableFrom": "db_project_member",
           "tableTo": "db_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1634,12 +1556,8 @@
           "name": "db_project_team_id_db_team_id_fk",
           "tableFrom": "db_project",
           "tableTo": "db_team",
-          "columnsFrom": [
-            "team_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["team_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1680,12 +1598,8 @@
           "name": "db_role_permission_role_id_db_role_id_fk",
           "tableFrom": "db_role_permission",
           "tableTo": "db_role",
-          "columnsFrom": [
-            "role_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["role_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1693,12 +1607,8 @@
           "name": "db_role_permission_permission_id_db_permission_id_fk",
           "tableFrom": "db_role_permission",
           "tableTo": "db_permission",
-          "columnsFrom": [
-            "permission_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["permission_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1706,10 +1616,7 @@
       "compositePrimaryKeys": {
         "db_role_permission_role_id_permission_id_pk": {
           "name": "db_role_permission_role_id_permission_id_pk",
-          "columns": [
-            "role_id",
-            "permission_id"
-          ]
+          "columns": ["role_id", "permission_id"]
         }
       },
       "uniqueConstraints": {},
@@ -1797,12 +1704,8 @@
           "name": "db_session_userId_db_user_id_fk",
           "tableFrom": "db_session",
           "tableTo": "db_user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1861,12 +1764,8 @@
           "name": "db_team_member_user_id_db_user_id_fk",
           "tableFrom": "db_team_member",
           "tableTo": "db_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -1874,12 +1773,8 @@
           "name": "db_team_member_team_id_db_team_id_fk",
           "tableFrom": "db_team_member",
           "tableTo": "db_team",
-          "columnsFrom": [
-            "team_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["team_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1996,12 +1891,8 @@
           "name": "db_temporary_link_user_id_db_user_id_fk",
           "tableFrom": "db_temporary_link",
           "tableTo": "db_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -2076,12 +1967,8 @@
           "name": "db_user_file_user_id_db_user_id_fk",
           "tableFrom": "db_user_file",
           "tableTo": "db_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2222,10 +2109,7 @@
       "compositePrimaryKeys": {
         "db_verificationToken_identifier_token_pk": {
           "name": "db_verificationToken_identifier_token_pk",
-          "columns": [
-            "identifier",
-            "token"
-          ]
+          "columns": ["identifier", "token"]
         }
       },
       "uniqueConstraints": {},
@@ -2276,30 +2160,17 @@
     "public.notification_channel_type": {
       "name": "notification_channel_type",
       "schema": "public",
-      "values": [
-        "email",
-        "sms",
-        "push",
-        "slack"
-      ]
+      "values": ["email", "sms", "push", "slack"]
     },
     "public.notification_type": {
       "name": "notification_type",
       "schema": "public",
-      "values": [
-        "security",
-        "system",
-        "marketing",
-        "team"
-      ]
+      "values": ["security", "system", "marketing", "team"]
     },
     "public.team_type": {
       "name": "team_type",
       "schema": "public",
-      "values": [
-        "personal",
-        "workspace"
-      ]
+      "values": ["personal", "workspace"]
     }
   },
   "schemas": {},

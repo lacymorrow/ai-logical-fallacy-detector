@@ -31,10 +31,7 @@ function parseFrontmatter(raw) {
     if (colonIdx === -1) continue;
     const key = line.slice(0, colonIdx).trim();
     let val = line.slice(colonIdx + 1).trim();
-    if (
-      (val.startsWith('"') && val.endsWith('"')) ||
-      (val.startsWith("'") && val.endsWith("'"))
-    ) {
+    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
       val = val.slice(1, -1);
     }
     if (val.startsWith("[") && val.endsWith("]")) {
@@ -64,16 +61,10 @@ function readEntries(dir, extensions) {
 fs.mkdirSync(GENERATED_DIR, { recursive: true });
 
 // Changelog
-const changelogEntries = readEntries(
-  path.join(CONTENT_DIR, "changelog"),
-  [".md", ".mdx"]
-);
+const changelogEntries = readEntries(path.join(CONTENT_DIR, "changelog"), [".md", ".mdx"]);
 
 // Blog
-const blogEntries = readEntries(path.join(CONTENT_DIR, "blog"), [
-  ".md",
-  ".mdx",
-]);
+const blogEntries = readEntries(path.join(CONTENT_DIR, "blog"), [".md", ".mdx"]);
 
 const changelogTs = `// AUTO-GENERATED — do not edit. Run: node scripts/prebuild-content.mjs
 export interface ManifestEntry {

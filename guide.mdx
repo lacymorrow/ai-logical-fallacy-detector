@@ -16,6 +16,7 @@ often inaccurate but significantly cheaper than the Encyclopedia Galactica.
 The Guide uses advanced AI to mimic the original Guide's functionality:
 
 ### Core AI Features
+
 - [x] Personality-driven responses in Douglas Adams' style
 - [x] Context-aware entry generation
 - [x] Cross-referencing and interconnected knowledge
@@ -23,6 +24,7 @@ The Guide uses advanced AI to mimic the original Guide's functionality:
 - [x] Adaptive learning from user interactions
 
 ### AI Personality Traits
+
 - Slightly superior attitude toward lesser reference works
 - Casual approach to accuracy ("mostly harmless")
 - Tendency to go off on entertaining tangents
@@ -30,21 +32,23 @@ The Guide uses advanced AI to mimic the original Guide's functionality:
 - Dry British humor throughout
 
 ### AI Response Components
+
 ```typescript
 interface GuideResponse {
-  mainEntry: string;          // The primary explanation
-  travelAdvice?: string;      // If applicable
-  whereToFind?: string;       // Location information
-  whatToAvoid: string;        // Important warnings
-  funFact: string;           // Something improbable
-  advertisement?: string;     // Subtle product placement
-  reliability: number;        // Always 42
-  dangerLevel: number;        // From 0 to "Mostly Harmless"
-  crossReferences: string[];  // Related entries
+  mainEntry: string; // The primary explanation
+  travelAdvice?: string; // If applicable
+  whereToFind?: string; // Location information
+  whatToAvoid: string; // Important warnings
+  funFact: string; // Something improbable
+  advertisement?: string; // Subtle product placement
+  reliability: number; // Always 42
+  dangerLevel: number; // From 0 to "Mostly Harmless"
+  crossReferences: string[]; // Related entries
 }
 ```
 
 ### AI Training Focus
+
 - Douglas Adams' writing style and humor
 - Scientific-sounding nonsense generation
 - Travel advice with questionable utility
@@ -55,6 +59,7 @@ interface GuideResponse {
 ## Current Features
 
 ### 🖥️ Interface
+
 - [x] Retro-futuristic green-on-black terminal style
 - [x] "DON'T PANIC" displayed in large, friendly letters
 - [x] Electronic book frame with glowing effect
@@ -63,6 +68,7 @@ interface GuideResponse {
 - [x] Easter eggs (e.g., "Share & Enjoy" footer)
 
 ### 🔍 Search and Generation
+
 - [x] AI-powered entry generation in Douglas Adams' style
 - [x] Fuzzy search matching
 - [x] Popularity-based search results
@@ -70,6 +76,7 @@ interface GuideResponse {
 - [x] Guide-style error messages
 
 ### 📚 Entry Structure
+
 - [x] Main description (witty and irreverent)
 - [x] Travel advisories
 - [x] Location information ("Where to find")
@@ -80,6 +87,7 @@ interface GuideResponse {
 - [x] Danger level indicators
 
 ### 🗃️ Database Features
+
 - [x] Categories for organizing entries
 - [x] Cross-references between related entries
 - [x] Entry revision history
@@ -89,6 +97,7 @@ interface GuideResponse {
 ## Planned Features
 
 ### 🌌 Core Guide Features
+
 - [ ] Sub-etha network simulation
 - [ ] Babel fish translation interface
 - [ ] Virtual currency (Altairian Dollars)
@@ -97,6 +106,7 @@ interface GuideResponse {
 - [ ] Towel-awareness indicators
 
 ### 👤 User Features
+
 - [ ] Field researcher profiles
 - [ ] Contribution system
 - [ ] Achievement badges
@@ -104,6 +114,7 @@ interface GuideResponse {
 - [ ] Travel history
 
 ### 🎮 Interactive Features
+
 - [ ] Random entry generator ("I'm feeling lucky")
 - [ ] Voice interface with Eddie-like personality
 - [ ] Emergency help button (prints "DON'T PANIC")
@@ -111,6 +122,7 @@ interface GuideResponse {
 - [ ] Infinite Improbability Drive integration
 
 ### 🍽️ Additional Content
+
 - [ ] Restaurant at the End of the Universe reviews
 - [ ] Pan Galactic Gargle Blaster recipe warnings
 - [ ] Vogon poetry analysis (with appropriate warnings)
@@ -120,6 +132,7 @@ interface GuideResponse {
 ## Technical Implementation
 
 ### Database Schema
+
 ```typescript
 // Main entries table with comprehensive fields
 export const guideEntries = createTable("guide_entry", {
@@ -140,7 +153,9 @@ export const guideEntries = createTable("guide_entry", {
 ```
 
 ### AI Generation
+
 The Guide uses GPT-4 to generate entries in Douglas Adams' distinctive style:
+
 - Witty and irreverent tone
 - Mix of useful information and complete nonsense
 - British humor throughout
@@ -148,6 +163,7 @@ The Guide uses GPT-4 to generate entries in Douglas Adams' distinctive style:
 - Subtle advertisements for improbable products
 
 ### Search Implementation
+
 - Full-text search with fuzzy matching
 - Popularity-based ranking
 - Cross-reference suggestions
@@ -157,6 +173,7 @@ The Guide uses GPT-4 to generate entries in Douglas Adams' distinctive style:
 ## Contributing
 
 To contribute to the Guide:
+
 1. Fork the repository
 2. Create a feature branch
 3. Add your entry/feature
@@ -174,16 +191,19 @@ Remember: DON'T PANIC, and always carry a towel.
 ## Future Plans
 
 ### Phase 1: Core Guide Features
+
 - [ ] Complete basic entry generation
 - [ ] Implement cross-referencing system
 - [ ] Add basic user profiles
 
 ### Phase 2: Advanced Features
+
 - [ ] Voice interface
 - [ ] AR star maps
 - [ ] Time travel warnings
 
 ### Phase 3: Universe Integration
+
 - [ ] Sub-etha network
 - [ ] Babel fish translation
 - [ ] Restaurant reviews
@@ -191,6 +211,7 @@ Remember: DON'T PANIC, and always carry a towel.
 ## Credits
 
 Special thanks to:
+
 - Douglas Adams for creating this remarkable universe
 - The Marketing Division of the Sirius Cybernetics Corporation
 - All the digital researchers who lost their sanity testing the system
@@ -199,43 +220,50 @@ Special thanks to:
 
 ---
 
-*This implementation is guaranteed to be almost, but not quite, entirely unlike the original Guide.*
+_This implementation is guaranteed to be almost, but not quite, entirely unlike the original Guide._
 
 ## Troubleshooting
 
 ### Common Issues and Solutions
 
 #### "DON'T PANIC" Display Issues
+
 - **Problem**: Text not appearing in large, friendly letters
 - **Solution**: Check your towel's proximity to the device
 - **Alternative**: Try turning your device off and on again while humming "God Save the Queen"
 
 #### Temporal Anomalies
+
 - **Problem**: Entries appearing before they're written
 - **Solution**: Wait for the universe to catch up
 - **Note**: If entries from the future persist, avoid reading tomorrow's lottery numbers
 
 #### Search Functionality
+
 - **Problem**: Search returns "Share and Enjoy" for everything
 - **Solution**: The Sirius Cybernetics Corporation marketing division has been notified
 - **Workaround**: Try expressing your search in the form of a complaint
 
 #### Babel Fish Integration
+
 - **Problem**: Translations coming out as Vogon poetry
 - **Solution**: DO NOT READ THE TRANSLATIONS
 - **Emergency**: If poetry was read, seek immediate medical attention
 
 #### Infinite Improbability Issues
+
 - **Problem**: Random mutations in the codebase
 - **Solution**: Calculate the exact degree of improbability and divide by 42
 - **Warning**: May temporarily turn your device into a whale or bowl of petunias
 
 #### Authentication Errors
+
 - **Problem**: System claims you don't exist
 - **Solution**: Philosophically prove your existence
 - **Alternative**: Check if you've recently been to a Disaster Area concert
 
 #### Performance Issues
+
 - **Problem**: Guide running slower than a Bugblatter Beast of Traal
 - **Solution**: Check if your device is currently in a time dilation field
 - **Quick Fix**: Remove any Infinite Improbability Drive interference
@@ -253,6 +281,7 @@ Special thanks to:
    - If reality doesn't normalize, you've had too much Gargle Blaster
 
 3. **Total System Failure**:
+
    ```bash
    # Emergency restart sequence
    $ sudo make-universe
@@ -277,9 +306,10 @@ Special thanks to:
 ### Support Contact
 
 For additional support:
+
 1. Wave a towel in a distress pattern
 2. Think happy thoughts about digital watches
 3. Submit a complaint to the Sirius Cybernetics Corporation
 4. Wait patiently for the heat death of the universe
 
-*Note: Support response times may be affected by temporal distortions, bureaucratic procedures, or lunch breaks at Milliways.*
+_Note: Support response times may be affected by temporal distortions, bureaucratic procedures, or lunch breaks at Milliways._

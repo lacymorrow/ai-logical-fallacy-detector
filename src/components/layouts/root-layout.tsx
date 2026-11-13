@@ -22,66 +22,65 @@ import { PostHogProvider } from "@/lib/posthog/posthog-provider";
 import { AnalyticsProvider } from "@/components/providers/analytics-provider";
 
 const fontSerif = FontSerif({
-	weight: ["400", "500", "600", "700"],
-	style: ["normal", "italic"],
-	subsets: ["latin"],
-	variable: "--font-serif",
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  subsets: ["latin"],
+  variable: "--font-serif",
 });
 
 const fontSans = FontSans({
-	display: "swap",
-	subsets: ["latin"],
-	variable: "--font-sans",
+  display: "swap",
+  subsets: ["latin"],
+  variable: "--font-sans",
 });
 
 export function RootLayout({ children }: { children: ReactNode }) {
-	return (
-		<ViewTransitions>
-			<Head>
-				{/* React Scan */}
-				<script src="https://unpkg.com/react-scan/dist/auto.global.js" async />
-			</Head>
-			<html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
-				<body
-					className={cn(
-						"min-h-screen antialiased",
-						"font-sans font-normal leading-relaxed",
-						fontSans.variable,
-						fontSerif.variable
-					)}
-				>
-					<JsonLd organization website />
-					<HolyLoader
-						showSpinner
-						height={"4px"}
-						color={"linear-gradient(90deg, #FF61D8, #8C52FF, #5CE1E6, #FF61D8)"}
-					/>
-					<PageTracker />
-					<SessionProvider>
-						<TRPCReactProvider>
-							<NuqsAdapter>
-							<ThemeProvider attribute="class" defaultTheme="dark">
-								<TooltipProvider delayDuration={100}>
-									<AnalyticsProvider>
-										{/* Content */}
-										{children}
+  return (
+    <ViewTransitions>
+      <Head>
+        {/* React Scan */}
+        <script src="https://unpkg.com/react-scan/dist/auto.global.js" async />
+      </Head>
+      <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
+        <body
+          className={cn(
+            "min-h-screen antialiased",
+            "font-sans leading-relaxed font-normal",
+            fontSans.variable,
+            fontSerif.variable
+          )}
+        >
+          <JsonLd organization website />
+          <HolyLoader
+            showSpinner
+            height={"4px"}
+            color={"linear-gradient(90deg, #FF61D8, #8C52FF, #5CE1E6, #FF61D8)"}
+          />
+          <PageTracker />
+          <SessionProvider>
+            <TRPCReactProvider>
+              <NuqsAdapter>
+                <ThemeProvider attribute="class" defaultTheme="dark">
+                  <TooltipProvider delayDuration={100}>
+                    <AnalyticsProvider>
+                      {/* Content */}
+                      {children}
 
+                      {/* Toast - Display messages to the user */}
+                      <SonnerToaster />
 
-										{/* Toast - Display messages to the user */}
-										<SonnerToaster />
-
-										{/* Error Toast - Display error messages to the user based on search params */}
-										<Suspense>
-											<ErrorToast />
-										</Suspense>
-									</AnalyticsProvider>
-								</TooltipProvider>
-							</ThemeProvider>
-						</NuqsAdapter>
-						</TRPCReactProvider>
-					</SessionProvider>
-				</body>
-			</html>
-		</ViewTransitions>
-	);
+                      {/* Error Toast - Display error messages to the user based on search params */}
+                      <Suspense>
+                        <ErrorToast />
+                      </Suspense>
+                    </AnalyticsProvider>
+                  </TooltipProvider>
+                </ThemeProvider>
+              </NuqsAdapter>
+            </TRPCReactProvider>
+          </SessionProvider>
+        </body>
+      </html>
+    </ViewTransitions>
+  );
 }

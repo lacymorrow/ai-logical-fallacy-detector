@@ -1,17 +1,17 @@
 import { env } from "@/env";
 import { relations, sql } from "drizzle-orm";
 import {
-	boolean,
-	index,
-	integer,
-	pgEnum,
-	pgTableCreator,
-	primaryKey,
-	serial,
-	text,
-	time,
-	timestamp,
-	varchar,
+  boolean,
+  index,
+  integer,
+  pgEnum,
+  pgTableCreator,
+  primaryKey,
+  serial,
+  text,
+  time,
+  timestamp,
+  varchar,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
 
@@ -25,56 +25,56 @@ const createTable = pgTableCreator((name) => `${env?.DB_PREFIX ?? ""}_${name}`);
 
 /* src/db/schema.ts */
 export const plans = createTable("plan", {
-	id: serial("id").primaryKey(),
-	productId: integer("productId").notNull(),
-	productName: text("productName"),
-	variantId: integer("variantId").notNull().unique(),
-	name: text("name").notNull(),
-	description: text("description"),
-	price: text("price").notNull(),
-	isUsageBased: boolean("isUsageBased").default(false),
-	interval: text("interval"),
-	intervalCount: integer("intervalCount"),
-	trialInterval: text("trialInterval"),
-	trialIntervalCount: integer("trialIntervalCount"),
-	sort: integer("sort"),
+  id: serial("id").primaryKey(),
+  productId: integer("productId").notNull(),
+  productName: text("productName"),
+  variantId: integer("variantId").notNull().unique(),
+  name: text("name").notNull(),
+  description: text("description"),
+  price: text("price").notNull(),
+  isUsageBased: boolean("isUsageBased").default(false),
+  interval: text("interval"),
+  intervalCount: integer("intervalCount"),
+  trialInterval: text("trialInterval"),
+  trialIntervalCount: integer("trialIntervalCount"),
+  sort: integer("sort"),
 });
 export type NewPlan = typeof plans.$inferInsert;
 
 export type Plan = typeof plans.$inferSelect;
 
 export const payments = createTable("payment", {
-	id: serial("id").primaryKey(),
-	userId: varchar("user_id", { length: 255 }).notNull(),
-	orderId: varchar("order_id", { length: 255 }),
-	amount: integer("amount"),
-	status: varchar("status", { length: 255 }).notNull(),
-	metadata: text("metadata").default("{}"),
-	createdAt: timestamp("created_at", { withTimezone: true })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
-	updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id", { length: 255 }).notNull(),
+  orderId: varchar("order_id", { length: 255 }),
+  amount: integer("amount"),
+  status: varchar("status", { length: 255 }).notNull(),
+  metadata: text("metadata").default("{}"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
 });
 export type Payment = typeof payments.$inferSelect;
 export type NewPayment = typeof payments.$inferInsert;
 
 export const posts = createTable(
-	"post",
-	{
-		id: serial("id").primaryKey(),
-		name: varchar("name", { length: 256 }),
-		createdById: varchar("createdById", { length: 255 })
-			.notNull()
-			.references(() => users.id),
-		createdAt: timestamp("created_at", { withTimezone: true })
-			.default(sql`CURRENT_TIMESTAMP`)
-			.notNull(),
-		updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
-	},
-	(example) => ({
-		createdByIdIdx: index("createdById_idx").on(example.createdById),
-		nameIndex: index("name_idx").on(example.name),
-	})
+  "post",
+  {
+    id: serial("id").primaryKey(),
+    name: varchar("name", { length: 256 }),
+    createdById: varchar("createdById", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
+  },
+  (example) => ({
+    createdByIdIdx: index("createdById_idx").on(example.createdById),
+    nameIndex: index("name_idx").on(example.name),
+  })
 );
 
 export type NewPost = typeof posts.$inferInsert;
@@ -115,34 +115,34 @@ export type NewUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 
 export const userFiles = createTable(
-	"user_file",
-	{
-		id: serial("id").primaryKey(),
-		userId: varchar("user_id", { length: 255 })
-			.notNull()
-			.references(() => users.id, { onDelete: "cascade" }),
-		title: varchar("title", { length: 255 }).notNull(),
-		location: text("location").notNull(),
-		createdAt: timestamp("created_at", { withTimezone: true })
-			.default(sql`CURRENT_TIMESTAMP`)
-			.notNull(),
-		updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
-	},
-	(userFile) => ({
-		userIdIdx: index("user_file_user_id_idx").on(userFile.userId),
-	})
+  "user_file",
+  {
+    id: serial("id").primaryKey(),
+    userId: varchar("user_id", { length: 255 })
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    title: varchar("title", { length: 255 }).notNull(),
+    location: text("location").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
+  },
+  (userFile) => ({
+    userIdIdx: index("user_file_user_id_idx").on(userFile.userId),
+  })
 );
 
 export type UserFile = typeof userFiles.$inferSelect;
 export type NewUserFile = typeof userFiles.$inferInsert;
 
 export const userFilesRelations = relations(userFiles, ({ one }) => ({
-	user: one(users, { fields: [userFiles.userId], references: [users.id] }),
+  user: one(users, { fields: [userFiles.userId], references: [users.id] }),
 }));
 
 export const usersRelations = relations(users, ({ many }) => ({
-	accounts: many(accounts),
-	files: many(userFiles),
+  accounts: many(accounts),
+  files: many(userFiles),
 }));
 
 export const accounts = createTable(
@@ -180,7 +180,7 @@ export const accounts = createTable(
 );
 
 export const accountsRelations = relations(accounts, ({ one }) => ({
-	user: one(users, { fields: [accounts.userId], references: [users.id] }),
+  user: one(users, { fields: [accounts.userId], references: [users.id] }),
 }));
 
 export const sessions = createTable("session", {
@@ -199,7 +199,7 @@ export const sessions = createTable("session", {
 });
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
-	user: one(users, { fields: [sessions.userId], references: [users.id] }),
+  user: one(users, { fields: [sessions.userId], references: [users.id] }),
 }));
 
 export const verificationTokens = createTable(
@@ -222,24 +222,24 @@ export const verificationTokens = createTable(
 );
 
 export const authenticators = createTable(
-	"authenticator",
-	{
-		credentialID: text("credentialID").notNull().unique(),
-		userId: text("userId")
-			.notNull()
-			.references(() => users.id, { onDelete: "cascade" }),
-		providerAccountId: text("providerAccountId").notNull(),
-		credentialPublicKey: text("credentialPublicKey").notNull(),
-		counter: integer("counter").notNull(),
-		credentialDeviceType: text("credentialDeviceType").notNull(),
-		credentialBackedUp: boolean("credentialBackedUp").notNull(),
-		transports: text("transports"),
-	},
-	(authenticator) => ({
-		compositePK: primaryKey({
-			columns: [authenticator.userId, authenticator.credentialID],
-		}),
-	})
+  "authenticator",
+  {
+    credentialID: text("credentialID").notNull().unique(),
+    userId: text("userId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    providerAccountId: text("providerAccountId").notNull(),
+    credentialPublicKey: text("credentialPublicKey").notNull(),
+    counter: integer("counter").notNull(),
+    credentialDeviceType: text("credentialDeviceType").notNull(),
+    credentialBackedUp: boolean("credentialBackedUp").notNull(),
+    transports: text("transports"),
+  },
+  (authenticator) => ({
+    compositePK: primaryKey({
+      columns: [authenticator.userId, authenticator.credentialID],
+    }),
+  })
 );
 
 /**
@@ -254,208 +254,198 @@ export const authenticators = createTable(
 export const teamType = pgEnum("team_type", ["personal", "workspace"]);
 
 export const teams = createTable("team", {
-	id: varchar("id", { length: 255 })
-		.notNull()
-		.primaryKey()
-		.$defaultFn(() => crypto.randomUUID()),
-	name: varchar("name", { length: 255 }).notNull(),
-	type: teamType("type").default("workspace").notNull(),
-	createdAt: timestamp("created_at", { withTimezone: true })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
-	updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-		() => new Date(),
-	),
-	deletedAt: timestamp("deleted_at", { withTimezone: true }),
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }).notNull(),
+  type: teamType("type").default("workspace").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
+  deletedAt: timestamp("deleted_at", { withTimezone: true }),
 });
 
 export const teamsRelations = relations(teams, ({ many }) => ({
-	members: many(teamMembers),
+  members: many(teamMembers),
 }));
 
 export const teamMembers = createTable("team_member", {
-	id: varchar("id", { length: 255 })
-		.notNull()
-		.primaryKey()
-		.$defaultFn(() => crypto.randomUUID()),
-	userId: varchar("user_id", { length: 255 })
-		.notNull()
-		.references(() => users.id),
-	teamId: varchar("team_id", { length: 255 })
-		.notNull()
-		.references(() => teams.id, { onDelete: "cascade" }),
-	role: varchar("role", { length: 50 }).notNull(),
-	createdAt: timestamp("created_at", { withTimezone: true })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
-	updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-		() => new Date(),
-	),
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: varchar("user_id", { length: 255 })
+    .notNull()
+    .references(() => users.id),
+  teamId: varchar("team_id", { length: 255 })
+    .notNull()
+    .references(() => teams.id, { onDelete: "cascade" }),
+  role: varchar("role", { length: 50 }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
 });
 
 export const teamMembersRelations = relations(teamMembers, ({ one }) => ({
-	team: one(teams, { fields: [teamMembers.teamId], references: [teams.id] }),
-	user: one(users, { fields: [teamMembers.userId], references: [users.id] }),
+  team: one(teams, { fields: [teamMembers.teamId], references: [teams.id] }),
+  user: one(users, { fields: [teamMembers.userId], references: [users.id] }),
 }));
 
 export const projects = createTable("project", {
-	id: varchar("id", { length: 255 })
-		.notNull()
-		.primaryKey()
-		.$defaultFn(() => crypto.randomUUID()),
-	name: varchar("name", { length: 255 }).notNull(),
-	teamId: varchar("team_id", { length: 255 }).references(() => teams.id, {
-		onDelete: "cascade",
-	}),
-	createdAt: timestamp("created_at", { withTimezone: true })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
-	updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-		() => new Date(),
-	),
-	expiresAt: timestamp("expires_at", { withTimezone: true }),
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }).notNull(),
+  teamId: varchar("team_id", { length: 255 }).references(() => teams.id, {
+    onDelete: "cascade",
+  }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
+  expiresAt: timestamp("expires_at", { withTimezone: true }),
 });
 
 export const projectMembers = createTable("project_member", {
-	id: varchar("id", { length: 255 })
-		.notNull()
-		.primaryKey()
-		.$defaultFn(() => crypto.randomUUID()),
-	projectId: varchar("project_id", { length: 255 })
-		.notNull()
-		.references(() => projects.id),
-	userId: varchar("user_id", { length: 255 })
-		.notNull()
-		.references(() => users.id),
-	role: varchar("role", { length: 50 }).notNull(),
-	createdAt: timestamp("created_at", { withTimezone: true })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
-	updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-		() => new Date(),
-	),
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  projectId: varchar("project_id", { length: 255 })
+    .notNull()
+    .references(() => projects.id),
+  userId: varchar("user_id", { length: 255 })
+    .notNull()
+    .references(() => users.id),
+  role: varchar("role", { length: 50 }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
 });
 
 export const apiKeys = createTable("api_key", {
-	id: varchar("id", { length: 255 })
-		.notNull()
-		.primaryKey()
-		.$defaultFn(() => crypto.randomUUID()),
-	key: varchar("key", { length: 255 }).notNull(),
-	userId: varchar("user_id", { length: 255 })
-		// .notNull()
-		.references(() => users.id),
-	projectId: varchar("project_id", { length: 255 }).references(
-		() => projects.id,
-	),
-	name: varchar("name", { length: 255 }).notNull(),
-	description: text("description"),
-	expiresAt: timestamp("expires_at"),
-	lastUsedAt: timestamp("last_used_at"),
-	createdAt: timestamp("created_at")
-		.notNull()
-		.$defaultFn(() => new Date()),
-	updatedAt: timestamp("updated_at")
-		.notNull()
-		.$defaultFn(() => new Date()),
-	deletedAt: timestamp("deleted_at"),
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  key: varchar("key", { length: 255 }).notNull(),
+  userId: varchar("user_id", { length: 255 })
+    // .notNull()
+    .references(() => users.id),
+  projectId: varchar("project_id", { length: 255 }).references(() => projects.id),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: text("description"),
+  expiresAt: timestamp("expires_at"),
+  lastUsedAt: timestamp("last_used_at"),
+  createdAt: timestamp("created_at")
+    .notNull()
+    .$defaultFn(() => new Date()),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .$defaultFn(() => new Date()),
+  deletedAt: timestamp("deleted_at"),
 });
 
 // Define relations
 
 export const teamRelations = relations(teams, ({ many }) => ({
-	members: many(teamMembers),
-	projects: many(projects),
+  members: many(teamMembers),
+  projects: many(projects),
 }));
 
 export const projectRelations = relations(projects, ({ many, one }) => ({
-	members: many(projectMembers),
-	apiKeys: many(apiKeys),
-	team: one(teams, {
-		fields: [projects.teamId],
-		references: [teams.id],
-	}),
+  members: many(projectMembers),
+  apiKeys: many(apiKeys),
+  team: one(teams, {
+    fields: [projects.teamId],
+    references: [teams.id],
+  }),
 }));
 
 export const projectMembersRelations = relations(projectMembers, ({ one }) => ({
-	project: one(projects, {
-		fields: [projectMembers.projectId],
-		references: [projects.id],
-	}),
-	user: one(users, {
-		fields: [projectMembers.userId],
-		references: [users.id],
-	}),
+  project: one(projects, {
+    fields: [projectMembers.projectId],
+    references: [projects.id],
+  }),
+  user: one(users, {
+    fields: [projectMembers.userId],
+    references: [users.id],
+  }),
 }));
 
 export const userRelations = relations(users, ({ many }) => ({
-	teamMemberships: many(teamMembers),
-	projectMemberships: many(projectMembers),
-	temporaryLinks: many(temporaryLinks),
-	notificationChannels: many(notificationChannels),
-	notificationPreferences: many(notificationPreferences),
-	notificationHistory: many(notificationHistory),
+  teamMemberships: many(teamMembers),
+  projectMemberships: many(projectMembers),
+  temporaryLinks: many(temporaryLinks),
+  notificationChannels: many(notificationChannels),
+  notificationPreferences: many(notificationPreferences),
+  notificationHistory: many(notificationHistory),
 }));
 
 export const logs = createTable("log", {
-	id: serial("id").primaryKey(),
-	timestamp: timestamp("timestamp", { withTimezone: true })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
-	level: text("level").notNull(),
-	message: text("message").notNull(),
-	prefix: text("prefix"),
-	emoji: text("emoji"),
-	metadata: text("metadata"), // Store as JSON string
-	apiKeyId: varchar("api_key_id", { length: 255 })
-		.notNull()
-		.references(() => apiKeys.id),
+  id: serial("id").primaryKey(),
+  timestamp: timestamp("timestamp", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  level: text("level").notNull(),
+  message: text("message").notNull(),
+  prefix: text("prefix"),
+  emoji: text("emoji"),
+  metadata: text("metadata"), // Store as JSON string
+  apiKeyId: varchar("api_key_id", { length: 255 })
+    .notNull()
+    .references(() => apiKeys.id),
 });
 
 export const logRelations = relations(logs, ({ one }) => ({
-	apiKey: one(apiKeys, { fields: [logs.apiKeyId], references: [apiKeys.id] }),
+  apiKey: one(apiKeys, { fields: [logs.apiKeyId], references: [apiKeys.id] }),
 }));
 
 export const apiKeysRelations = relations(apiKeys, ({ one }) => ({
-	user: one(users, {
-		fields: [apiKeys.userId],
-		references: [users.id],
-	}),
-	project: one(projects, {
-		fields: [apiKeys.projectId],
-		references: [projects.id],
-	}),
+  user: one(users, {
+    fields: [apiKeys.userId],
+    references: [users.id],
+  }),
+  project: one(projects, {
+    fields: [apiKeys.projectId],
+    references: [projects.id],
+  }),
 }));
 
 export const paymentsRelations = relations(payments, ({ one }) => ({
-	user: one(users, { fields: [payments.userId], references: [users.id] }),
+  user: one(users, { fields: [payments.userId], references: [users.id] }),
 }));
 // Define the webhookEvents table for storing webhook events
 export const webhookEvents = createTable("webhook_event", {
-	id: serial("id").primaryKey(),
-	eventName: text("event_name").notNull(),
-	processed: boolean("processed").default(false),
-	body: text("body").notNull(), // Store the event body as JSON string
+  id: serial("id").primaryKey(),
+  eventName: text("event_name").notNull(),
+  processed: boolean("processed").default(false),
+  body: text("body").notNull(), // Store the event body as JSON string
 });
 export type WebhookEvent = typeof webhookEvents.$inferSelect;
 
 export const temporaryLinks = createTable("temporary_link", {
-	id: varchar("id", { length: 255 })
-		.notNull()
-		.primaryKey()
-		.$defaultFn(() => crypto.randomUUID()),
-	userId: varchar("user_id", { length: 255 }).references(() => users.id),
-	data: text("data"),
-	createdAt: timestamp("created_at", { withTimezone: true })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
-	expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
-	type: varchar("type", { length: 50 }).notNull(), // e.g., 'download', 'invite', etc.
-	metadata: text("metadata"), // Optional JSON string for additional data
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: varchar("user_id", { length: 255 }).references(() => users.id),
+  data: text("data"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  type: varchar("type", { length: 50 }).notNull(), // e.g., 'download', 'invite', etc.
+  metadata: text("metadata"), // Optional JSON string for additional data
 });
 
 export const temporaryLinksRelations = relations(temporaryLinks, ({ one }) => ({
-	user: one(users, { fields: [temporaryLinks.userId], references: [users.id] }),
+  user: one(users, { fields: [temporaryLinks.userId], references: [users.id] }),
 }));
 
 /**
@@ -467,192 +457,179 @@ export const temporaryLinksRelations = relations(temporaryLinks, ({ one }) => ({
  */
 
 export const roles = createTable("role", {
-	id: varchar("id", { length: 255 })
-		.notNull()
-		.primaryKey()
-		.$defaultFn(() => crypto.randomUUID()),
-	name: varchar("name", { length: 255 }).notNull(),
-	description: text("description"),
-	isSystem: boolean("is_system").default(false).notNull(),
-	createdAt: timestamp("created_at", { withTimezone: true })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
-	updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-		() => new Date(),
-	),
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: text("description"),
+  isSystem: boolean("is_system").default(false).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
 });
 
 export const permissions = createTable("permission", {
-	id: varchar("id", { length: 255 })
-		.notNull()
-		.primaryKey()
-		.$defaultFn(() => crypto.randomUUID()),
-	name: varchar("name", { length: 255 }).notNull(),
-	description: text("description"),
-	resource: varchar("resource", { length: 255 }).notNull(),
-	action: varchar("action", { length: 255 }).notNull(),
-	attributes: text("attributes"), // JSON string of additional attributes
-	createdAt: timestamp("created_at", { withTimezone: true })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: text("description"),
+  resource: varchar("resource", { length: 255 }).notNull(),
+  action: varchar("action", { length: 255 }).notNull(),
+  attributes: text("attributes"), // JSON string of additional attributes
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
 });
 
 export const rolePermissions = createTable(
-	"role_permission",
-	{
-		roleId: varchar("role_id", { length: 255 })
-			.notNull()
-			.references(() => roles.id, { onDelete: "cascade" }),
-		permissionId: varchar("permission_id", { length: 255 })
-			.notNull()
-			.references(() => permissions.id, { onDelete: "cascade" }),
-		createdAt: timestamp("created_at", { withTimezone: true })
-			.default(sql`CURRENT_TIMESTAMP`)
-			.notNull(),
-	},
-	(table) => ({
-		pk: primaryKey({ columns: [table.roleId, table.permissionId] }),
-	}),
+  "role_permission",
+  {
+    roleId: varchar("role_id", { length: 255 })
+      .notNull()
+      .references(() => roles.id, { onDelete: "cascade" }),
+    permissionId: varchar("permission_id", { length: 255 })
+      .notNull()
+      .references(() => permissions.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => ({
+    pk: primaryKey({ columns: [table.roleId, table.permissionId] }),
+  })
 );
 
 // Add relations
 export const rolesRelations = relations(roles, ({ many }) => ({
-	permissions: many(rolePermissions),
+  permissions: many(rolePermissions),
 }));
 
 export const permissionsRelations = relations(permissions, ({ many }) => ({
-	roles: many(rolePermissions),
+  roles: many(rolePermissions),
 }));
 
-export const rolePermissionsRelations = relations(
-	rolePermissions,
-	({ one }) => ({
-		role: one(roles, {
-			fields: [rolePermissions.roleId],
-			references: [roles.id],
-		}),
-		permission: one(permissions, {
-			fields: [rolePermissions.permissionId],
-			references: [permissions.id],
-		}),
-	}),
-);
+export const rolePermissionsRelations = relations(rolePermissions, ({ one }) => ({
+  role: one(roles, {
+    fields: [rolePermissions.roleId],
+    references: [roles.id],
+  }),
+  permission: one(permissions, {
+    fields: [rolePermissions.permissionId],
+    references: [permissions.id],
+  }),
+}));
 
 // Add feedback table
 export const feedback = createTable("feedback", {
-	id: varchar("id", { length: 255 })
-		.notNull()
-		.primaryKey()
-		.$defaultFn(() => crypto.randomUUID()),
-	content: text("content").notNull(),
-	source: varchar("source", { length: 50 }).notNull(), // 'dialog' or 'popover'
-	metadata: text("metadata").default("{}"),
-	status: varchar("status", { length: 20 }).notNull().default("new"), // 'new', 'reviewed', 'archived'
-	createdAt: timestamp("created_at", { withTimezone: true })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
-	updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-		() => new Date(),
-	),
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  content: text("content").notNull(),
+  source: varchar("source", { length: 50 }).notNull(), // 'dialog' or 'popover'
+  metadata: text("metadata").default("{}"),
+  status: varchar("status", { length: 20 }).notNull().default("new"), // 'new', 'reviewed', 'archived'
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
 });
 
 // Entry categories for better organization
 export const guideCategories = createTable("guide_category", {
-	id: serial("id").primaryKey(),
-	name: varchar("name", { length: 100 }).notNull(),
-	description: text("description").notNull(),
-	icon: varchar("icon", { length: 50 }).notNull(),
-	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(),
+  description: text("description").notNull(),
+  icon: varchar("icon", { length: 50 }).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 // Cross-references between entries
 export const guideCrossReferences = createTable("guide_cross_reference", {
-	id: serial("id").primaryKey(),
-	sourceEntryId: integer("source_entry_id")
-		.references(() => guideEntries.id)
-		.notNull(),
-	targetEntryId: integer("target_entry_id")
-		.references(() => guideEntries.id)
-		.notNull(),
-	context: text("context").notNull(), // Why these entries are related
-	createdAt: timestamp("created_at").defaultNow().notNull(),
+  id: serial("id").primaryKey(),
+  sourceEntryId: integer("source_entry_id")
+    .references(() => guideEntries.id)
+    .notNull(),
+  targetEntryId: integer("target_entry_id")
+    .references(() => guideEntries.id)
+    .notNull(),
+  context: text("context").notNull(), // Why these entries are related
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 // Entry revisions for tracking changes
 export const guideEntryRevisions = createTable("guide_entry_revision", {
-	id: serial("id").primaryKey(),
-	entryId: integer("entry_id")
-		.references(() => guideEntries.id, { onDelete: "cascade" })
-		.notNull(),
-	content: text("content").notNull(),
-	reason: text("reason").notNull(),
-	contributorId: varchar("contributor_id", { length: 255 }).references(
-		() => users.id,
-		{ onDelete: "set null" },
-	),
-	createdAt: timestamp("created_at").defaultNow().notNull(),
+  id: serial("id").primaryKey(),
+  entryId: integer("entry_id")
+    .references(() => guideEntries.id, { onDelete: "cascade" })
+    .notNull(),
+  content: text("content").notNull(),
+  reason: text("reason").notNull(),
+  contributorId: varchar("contributor_id", { length: 255 }).references(() => users.id, {
+    onDelete: "set null",
+  }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 // Enhance the main guide entries table
 export const guideEntries = createTable(
-	"guide_entry",
-	{
-		id: serial("id").primaryKey(),
-		searchTerm: text("search_term").notNull(),
-		content: text("content").notNull(),
-		categoryId: integer("category_id").references(() => guideCategories.id),
-		popularity: integer("popularity").default(0).notNull(),
-		reliability: integer("reliability").default(42).notNull(),
-		dangerLevel: integer("danger_level").default(0).notNull(),
-		travelAdvice: text("travel_advice"),
-		whereToFind: text("where_to_find"),
-		whatToAvoid: text("what_to_avoid"),
-		funFact: text("fun_fact"),
-		advertisement: text("advertisement"),
-		contributorId: varchar("contributor_id", { length: 255 }).references(
-			() => users.id,
-			{ onDelete: "set null" },
-		),
-		searchVector: text("search_vector").notNull().default(""),
-		createdAt: timestamp("created_at").defaultNow().notNull(),
-		updatedAt: timestamp("updated_at").defaultNow().notNull(),
-	},
-	(table) => {
-		return {
-			searchTermIdx: index("guide_entries_search_term_idx").on(
-				table.searchTerm,
-			),
-			searchVectorIdx: index("guide_entries_search_vector_idx").on(
-				table.searchVector,
-			),
-			popularityIdx: index("guide_entries_popularity_idx").on(table.popularity),
-			categoryIdx: index("guide_entries_category_idx").on(table.categoryId),
-		};
-	},
+  "guide_entry",
+  {
+    id: serial("id").primaryKey(),
+    searchTerm: text("search_term").notNull(),
+    content: text("content").notNull(),
+    categoryId: integer("category_id").references(() => guideCategories.id),
+    popularity: integer("popularity").default(0).notNull(),
+    reliability: integer("reliability").default(42).notNull(),
+    dangerLevel: integer("danger_level").default(0).notNull(),
+    travelAdvice: text("travel_advice"),
+    whereToFind: text("where_to_find"),
+    whatToAvoid: text("what_to_avoid"),
+    funFact: text("fun_fact"),
+    advertisement: text("advertisement"),
+    contributorId: varchar("contributor_id", { length: 255 }).references(() => users.id, {
+      onDelete: "set null",
+    }),
+    searchVector: text("search_vector").notNull().default(""),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => {
+    return {
+      searchTermIdx: index("guide_entries_search_term_idx").on(table.searchTerm),
+      searchVectorIdx: index("guide_entries_search_vector_idx").on(table.searchVector),
+      popularityIdx: index("guide_entries_popularity_idx").on(table.popularity),
+      categoryIdx: index("guide_entries_category_idx").on(table.categoryId),
+    };
+  }
 );
 
 // Then define relations
 export const entriesRelations = relations(guideEntries, ({ one, many }) => ({
-	category: one(guideCategories, {
-		fields: [guideEntries.categoryId],
-		references: [guideCategories.id],
-	}),
-	contributor: one(users, {
-		fields: [guideEntries.contributorId],
-		references: [users.id],
-	}),
-	revisions: many(guideEntryRevisions),
-	// sourceCrossReferences: many(guideCrossReferences, {
-	// 	relationName: "sourceCrossReferences",
-	// 	fields: [guideEntries.id],
-	// 	references: [guideCrossReferences.sourceEntryId],
-	// }),
-	// targetCrossReferences: many(guideCrossReferences, {
-	// 	relationName: "targetCrossReferences",
-	// 	fields: [guideEntries.id],
-	// 	references: [guideCrossReferences.targetEntryId],
-	// }),
+  category: one(guideCategories, {
+    fields: [guideEntries.categoryId],
+    references: [guideCategories.id],
+  }),
+  contributor: one(users, {
+    fields: [guideEntries.contributorId],
+    references: [users.id],
+  }),
+  revisions: many(guideEntryRevisions),
+  // sourceCrossReferences: many(guideCrossReferences, {
+  // 	relationName: "sourceCrossReferences",
+  // 	fields: [guideEntries.id],
+  // 	references: [guideCrossReferences.sourceEntryId],
+  // }),
+  // targetCrossReferences: many(guideCrossReferences, {
+  // 	relationName: "targetCrossReferences",
+  // 	fields: [guideEntries.id],
+  // 	references: [guideCrossReferences.targetEntryId],
+  // }),
 }));
 
 // Export types
@@ -664,297 +641,265 @@ export type GuideEntryRevision = typeof guideEntryRevisions.$inferSelect;
 
 // Notification channel types
 export const notificationChannelType = pgEnum("notification_channel_type", [
-	"email",
-	"sms",
-	"push",
-	"slack",
+  "email",
+  "sms",
+  "push",
+  "slack",
 ]);
 
 // Notification types
 export const notificationType = pgEnum("notification_type", [
-	"security",
-	"system",
-	"marketing",
-	"team",
+  "security",
+  "system",
+  "marketing",
+  "team",
 ]);
 
 // Notification channels table
 export const notificationChannels = createTable("notification_channel", {
-	id: varchar("id", { length: 255 })
-		.notNull()
-		.primaryKey()
-		.$defaultFn(() => crypto.randomUUID()),
-	userId: varchar("user_id", { length: 255 })
-		.notNull()
-		.references(() => users.id, { onDelete: "cascade" }),
-	type: notificationChannelType("type").notNull(),
-	enabled: boolean("enabled").default(true),
-	configuration: text("configuration").default("{}"), // JSON string for channel-specific config
-	createdAt: timestamp("created_at", { withTimezone: true })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
-	updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-		() => new Date(),
-	),
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: varchar("user_id", { length: 255 })
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  type: notificationChannelType("type").notNull(),
+  enabled: boolean("enabled").default(true),
+  configuration: text("configuration").default("{}"), // JSON string for channel-specific config
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
 });
 
 // Notification preferences table
 export const notificationPreferences = createTable("notification_preference", {
-	id: varchar("id", { length: 255 })
-		.notNull()
-		.primaryKey()
-		.$defaultFn(() => crypto.randomUUID()),
-	userId: varchar("user_id", { length: 255 })
-		.notNull()
-		.references(() => users.id, { onDelete: "cascade" }),
-	type: notificationType("type").notNull(),
-	channels: text("channels").default("[]"), // JSON array of enabled channel types
-	quietHoursStart: time("quiet_hours_start", { withTimezone: true }),
-	quietHoursEnd: time("quiet_hours_end", { withTimezone: true }),
-	timezone: varchar("timezone", { length: 100 }).default("UTC"),
-	frequency: varchar("frequency", { length: 50 }).default("instant"), // instant, daily, weekly
-	createdAt: timestamp("created_at", { withTimezone: true })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
-	updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-		() => new Date(),
-	),
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: varchar("user_id", { length: 255 })
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  type: notificationType("type").notNull(),
+  channels: text("channels").default("[]"), // JSON array of enabled channel types
+  quietHoursStart: time("quiet_hours_start", { withTimezone: true }),
+  quietHoursEnd: time("quiet_hours_end", { withTimezone: true }),
+  timezone: varchar("timezone", { length: 100 }).default("UTC"),
+  frequency: varchar("frequency", { length: 50 }).default("instant"), // instant, daily, weekly
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
 });
 
 // Notification history table
 export const notificationHistory = createTable("notification_history", {
-	id: varchar("id", { length: 255 })
-		.notNull()
-		.primaryKey()
-		.$defaultFn(() => crypto.randomUUID()),
-	userId: varchar("user_id", { length: 255 })
-		.notNull()
-		.references(() => users.id, { onDelete: "cascade" }),
-	type: notificationType("type").notNull(),
-	channel: notificationChannelType("channel").notNull(),
-	title: varchar("title", { length: 255 }).notNull(),
-	content: text("content").notNull(),
-	metadata: text("metadata").default("{}"), // JSON string for additional data
-	status: varchar("status", { length: 50 }).notNull().default("sent"), // sent, delivered, failed
-	sentAt: timestamp("sent_at", { withTimezone: true })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
-	deliveredAt: timestamp("delivered_at", { withTimezone: true }),
-	error: text("error"),
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: varchar("user_id", { length: 255 })
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  type: notificationType("type").notNull(),
+  channel: notificationChannelType("channel").notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  content: text("content").notNull(),
+  metadata: text("metadata").default("{}"), // JSON string for additional data
+  status: varchar("status", { length: 50 }).notNull().default("sent"), // sent, delivered, failed
+  sentAt: timestamp("sent_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  deliveredAt: timestamp("delivered_at", { withTimezone: true }),
+  error: text("error"),
 });
 
 // Notification templates table
 export const notificationTemplates = createTable("notification_template", {
-	id: varchar("id", { length: 255 })
-		.notNull()
-		.primaryKey()
-		.$defaultFn(() => crypto.randomUUID()),
-	name: varchar("name", { length: 255 }).notNull(),
-	description: text("description"),
-	type: notificationType("type").notNull(),
-	channel: notificationChannelType("channel").notNull(),
-	subject: varchar("subject", { length: 255 }), // For email templates
-	content: text("content").notNull(),
-	variables: text("variables").default("[]"), // JSON array of variable names
-	metadata: text("metadata").default("{}"), // JSON string for additional data
-	createdAt: timestamp("created_at", { withTimezone: true })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
-	updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-		() => new Date(),
-	),
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: text("description"),
+  type: notificationType("type").notNull(),
+  channel: notificationChannelType("channel").notNull(),
+  subject: varchar("subject", { length: 255 }), // For email templates
+  content: text("content").notNull(),
+  variables: text("variables").default("[]"), // JSON array of variable names
+  metadata: text("metadata").default("{}"), // JSON string for additional data
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
 });
 
 // Add relations
-export const notificationChannelsRelations = relations(
-	notificationChannels,
-	({ one }) => ({
-		user: one(users, {
-			fields: [notificationChannels.userId],
-			references: [users.id],
-		}),
-	}),
-);
+export const notificationChannelsRelations = relations(notificationChannels, ({ one }) => ({
+  user: one(users, {
+    fields: [notificationChannels.userId],
+    references: [users.id],
+  }),
+}));
 
-export const notificationPreferencesRelations = relations(
-	notificationPreferences,
-	({ one }) => ({
-		user: one(users, {
-			fields: [notificationPreferences.userId],
-			references: [users.id],
-		}),
-	}),
-);
+export const notificationPreferencesRelations = relations(notificationPreferences, ({ one }) => ({
+  user: one(users, {
+    fields: [notificationPreferences.userId],
+    references: [users.id],
+  }),
+}));
 
-export const notificationHistoryRelations = relations(
-	notificationHistory,
-	({ one }) => ({
-		user: one(users, {
-			fields: [notificationHistory.userId],
-			references: [users.id],
-		}),
-	}),
-);
+export const notificationHistoryRelations = relations(notificationHistory, ({ one }) => ({
+  user: one(users, {
+    fields: [notificationHistory.userId],
+    references: [users.id],
+  }),
+}));
 
 // Add relations for revisions
-export const guideEntryRevisionsRelations = relations(
-	guideEntryRevisions,
-	({ one }) => ({
-		entry: one(guideEntries, {
-			fields: [guideEntryRevisions.entryId],
-			references: [guideEntries.id],
-		}),
-		contributor: one(users, {
-			fields: [guideEntryRevisions.contributorId],
-			references: [users.id],
-		}),
-	}),
-);
+export const guideEntryRevisionsRelations = relations(guideEntryRevisions, ({ one }) => ({
+  entry: one(guideEntries, {
+    fields: [guideEntryRevisions.entryId],
+    references: [guideEntries.id],
+  }),
+  contributor: one(users, {
+    fields: [guideEntryRevisions.contributorId],
+    references: [users.id],
+  }),
+}));
 
 // --- Missing tables required by upstream ShipKit references ---
 
 export const userCredits = createTable(
-	"user_credit",
-	{
-		id: varchar("id", { length: 255 })
-			.notNull()
-			.primaryKey()
-			.$defaultFn(() => crypto.randomUUID()),
-		userId: varchar("user_id", { length: 255 })
-			.notNull()
-			.unique()
-			.references(() => users.id, { onDelete: "cascade" }),
-		balance: integer("balance").notNull().default(0),
-		createdAt: timestamp("created_at", { withTimezone: true })
-			.default(sql`CURRENT_TIMESTAMP`)
-			.notNull(),
-		updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-			() => new Date(),
-		),
-	},
-	(table) => ({
-		userIdIdx: index("user_credit_user_id_idx").on(table.userId),
-	}),
+  "user_credit",
+  {
+    id: varchar("id", { length: 255 })
+      .notNull()
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: varchar("user_id", { length: 255 })
+      .notNull()
+      .unique()
+      .references(() => users.id, { onDelete: "cascade" }),
+    balance: integer("balance").notNull().default(0),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
+  },
+  (table) => ({
+    userIdIdx: index("user_credit_user_id_idx").on(table.userId),
+  })
 );
 
 export type UserCredit = typeof userCredits.$inferSelect;
 export type NewUserCredit = typeof userCredits.$inferInsert;
 
 export const creditTransactions = createTable(
-	"credit_transaction",
-	{
-		id: varchar("id", { length: 255 })
-			.notNull()
-			.primaryKey()
-			.$defaultFn(() => crypto.randomUUID()),
-		userId: varchar("user_id", { length: 255 })
-			.notNull()
-			.references(() => users.id, { onDelete: "cascade" }),
-		amount: integer("amount").notNull(),
-		type: varchar("type", { length: 50 }).notNull(),
-		description: text("description"),
-		metadata: text("metadata"),
-		createdAt: timestamp("created_at", { withTimezone: true })
-			.default(sql`CURRENT_TIMESTAMP`)
-			.notNull(),
-	},
-	(table) => ({
-		userIdIdx: index("credit_transaction_user_id_idx").on(table.userId),
-		typeIdx: index("credit_transaction_type_idx").on(table.type),
-	}),
+  "credit_transaction",
+  {
+    id: varchar("id", { length: 255 })
+      .notNull()
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: varchar("user_id", { length: 255 })
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    amount: integer("amount").notNull(),
+    type: varchar("type", { length: 50 }).notNull(),
+    description: text("description"),
+    metadata: text("metadata"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => ({
+    userIdIdx: index("credit_transaction_user_id_idx").on(table.userId),
+    typeIdx: index("credit_transaction_type_idx").on(table.type),
+  })
 );
 
 export type CreditTransaction = typeof creditTransactions.$inferSelect;
 export type NewCreditTransaction = typeof creditTransactions.$inferInsert;
 
 export const userCreditsRelations = relations(userCredits, ({ one }) => ({
-	user: one(users, { fields: [userCredits.userId], references: [users.id] }),
+  user: one(users, { fields: [userCredits.userId], references: [users.id] }),
 }));
 
-export const creditTransactionsRelations = relations(
-	creditTransactions,
-	({ one }) => ({
-		user: one(users, {
-			fields: [creditTransactions.userId],
-			references: [users.id],
-		}),
-	}),
-);
+export const creditTransactionsRelations = relations(creditTransactions, ({ one }) => ({
+  user: one(users, {
+    fields: [creditTransactions.userId],
+    references: [users.id],
+  }),
+}));
 
-export const deployments = createTable(
-	"deployments",
-	{
-		id: text("id")
-			.notNull()
-			.primaryKey()
-			.$defaultFn(() => crypto.randomUUID()),
-		userId: text("user_id")
-			.notNull()
-			.references(() => users.id, { onDelete: "cascade" }),
-		projectName: text("project_name").notNull(),
-		description: text("description"),
-		githubRepoUrl: text("github_repo_url"),
-		githubRepoName: text("github_repo_name"),
-		vercelProjectId: text("vercel_project_id"),
-		vercelProjectUrl: text("vercel_project_url"),
-		vercelDeploymentId: text("vercel_deployment_id"),
-		vercelDeploymentUrl: text("vercel_deployment_url"),
-		status: text("status", {
-			enum: ["deploying", "completed", "failed", "timeout"],
-		})
-			.notNull()
-			.default("deploying"),
-		error: text("error"),
-		createdAt: timestamp("created_at", { withTimezone: true })
-			.default(sql`CURRENT_TIMESTAMP`)
-			.notNull(),
-		updatedAt: timestamp("updated_at", { withTimezone: true })
-			.default(sql`CURRENT_TIMESTAMP`)
-			.notNull(),
-	},
-);
+export const deployments = createTable("deployments", {
+  id: text("id")
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  projectName: text("project_name").notNull(),
+  description: text("description"),
+  githubRepoUrl: text("github_repo_url"),
+  githubRepoName: text("github_repo_name"),
+  vercelProjectId: text("vercel_project_id"),
+  vercelProjectUrl: text("vercel_project_url"),
+  vercelDeploymentId: text("vercel_deployment_id"),
+  vercelDeploymentUrl: text("vercel_deployment_url"),
+  status: text("status", {
+    enum: ["deploying", "completed", "failed", "timeout"],
+  })
+    .notNull()
+    .default("deploying"),
+  error: text("error"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+});
 
 export type Deployment = typeof deployments.$inferSelect;
 export type NewDeployment = typeof deployments.$inferInsert;
 
 export const deploymentsRelations = relations(deployments, ({ one }) => ({
-	user: one(users, {
-		fields: [deployments.userId],
-		references: [users.id],
-	}),
+  user: one(users, {
+    fields: [deployments.userId],
+    references: [users.id],
+  }),
 }));
 
 export const waitlistEntries = createTable(
-	"waitlist_entry",
-	{
-		id: serial("id").primaryKey(),
-		email: varchar("email", { length: 255 }).notNull().unique(),
-		name: varchar("name", { length: 255 }).notNull(),
-		company: varchar("company", { length: 255 }),
-		role: varchar("role", { length: 100 }),
-		projectType: varchar("project_type", { length: 100 }),
-		timeline: varchar("timeline", { length: 100 }),
-		interests: text("interests"),
-		isNotified: boolean("is_notified").default(false),
-		notifiedAt: timestamp("notified_at", { withTimezone: true }),
-		source: varchar("source", { length: 50 }).default("website"),
-		metadata: text("metadata").default("{}"),
-		createdAt: timestamp("created_at", { withTimezone: true })
-			.default(sql`CURRENT_TIMESTAMP`)
-			.notNull(),
-		updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-			() => new Date(),
-		),
-	},
-	(waitlistEntry) => ({
-		emailIdx: index("waitlist_email_idx").on(waitlistEntry.email),
-		createdAtIdx: index("waitlist_created_at_idx").on(
-			waitlistEntry.createdAt,
-		),
-		isNotifiedIdx: index("waitlist_is_notified_idx").on(
-			waitlistEntry.isNotified,
-		),
-	}),
+  "waitlist_entry",
+  {
+    id: serial("id").primaryKey(),
+    email: varchar("email", { length: 255 }).notNull().unique(),
+    name: varchar("name", { length: 255 }).notNull(),
+    company: varchar("company", { length: 255 }),
+    role: varchar("role", { length: 100 }),
+    projectType: varchar("project_type", { length: 100 }),
+    timeline: varchar("timeline", { length: 100 }),
+    interests: text("interests"),
+    isNotified: boolean("is_notified").default(false),
+    notifiedAt: timestamp("notified_at", { withTimezone: true }),
+    source: varchar("source", { length: 50 }).default("website"),
+    metadata: text("metadata").default("{}"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
+  },
+  (waitlistEntry) => ({
+    emailIdx: index("waitlist_email_idx").on(waitlistEntry.email),
+    createdAtIdx: index("waitlist_created_at_idx").on(waitlistEntry.createdAt),
+    isNotifiedIdx: index("waitlist_is_notified_idx").on(waitlistEntry.isNotified),
+  })
 );
 
 export type WaitlistEntry = typeof waitlistEntries.$inferSelect;

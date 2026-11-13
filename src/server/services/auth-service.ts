@@ -381,7 +381,7 @@ export const AuthService = {
         password,
         redirect: false,
         callbackUrl: redirectTo,
-      })) as any;
+      }));
 
       if (!result || result.ok === false) {
         return { ok: false, error: result?.error ?? STATUS_CODES.CREDENTIALS.message };
@@ -487,7 +487,7 @@ export const AuthService = {
         password,
         redirect: false,
         callbackUrl: redirectTo,
-      })) as any;
+      }));
 
       if (!result || result.ok === false) {
         return { ok: false, error: result?.error ?? "Sign-up failed" };
