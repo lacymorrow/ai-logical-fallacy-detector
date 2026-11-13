@@ -9,9 +9,7 @@ export const encodeSearchParams = (searchParams?: SearchParams) => {
   const result = new URLSearchParams(
     Object.entries(searchParams).flatMap(([key, value]) => {
       if (value === undefined) return [];
-      return Array.isArray(value)
-        ? (value.map((v) => [key, v]))
-        : [[key, String(value.toString())]];
+      return Array.isArray(value) ? value.map((v) => [key, v]) : [[key, String(value.toString())]];
     })
   ).toString();
 

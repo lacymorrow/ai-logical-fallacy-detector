@@ -26,7 +26,7 @@ const createLogFunction =
     span.end();
 
     // Use console[level] if it exists, otherwise fall back to console.log
-    const consoleMethod = (console[level]) ?? console.log;
+    const consoleMethod = console[level] ?? console.log;
     consoleMethod(message, ...(error ? [error] : []), metadata);
   };
 

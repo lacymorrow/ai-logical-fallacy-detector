@@ -529,9 +529,7 @@ export function StreamingAnalysis({
     // Sort fallacies by confidence (highest first) to prioritize display
     const sortedFallacies = [...fallacies].sort((a, b) => b.confidence - a.confidence);
     const primaryFallacy = sortedFallacies[0]; // Use the highest confidence fallacy for primary styling
-    const isHovered =
-      fallacies.includes(hoveredFallacy!) ||
-      fallacies.includes(stickiedFallacy!);
+    const isHovered = fallacies.includes(hoveredFallacy!) || fallacies.includes(stickiedFallacy!);
     const hoveredFallacyInGroup = fallacies.find((f) => f === hoveredFallacy);
 
     // Create a dashed border style to indicate multiple fallacies
