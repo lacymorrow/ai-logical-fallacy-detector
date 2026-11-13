@@ -10,9 +10,9 @@ export const encodeSearchParams = (searchParams?: SearchParams) => {
     Object.entries(searchParams).flatMap(([key, value]) => {
       if (value === undefined) return [];
       return Array.isArray(value)
-        ? (value.map((v) => [key, v]) as [string, string][])
+        ? (value.map((v) => [key, v]))
         : [[key, String(value.toString())]];
-    }),
+    })
   ).toString();
 
   return result;

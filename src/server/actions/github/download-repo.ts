@@ -16,8 +16,8 @@ import { redirect } from "next/navigation";
  * serialization issues between Server and Client Components.
  */
 export async function downloadRepo() {
-	// Redirect to the download route handler
-	redirect(routes.api.download);
+  // Redirect to the download route handler
+  redirect(routes.api.download);
 }
 
 /**
@@ -30,7 +30,7 @@ export async function downloadRepo() {
  * serialization issues between Server and Client Components.
  */
 export async function downloadRepoAnonymously(formData: FormData) {
-	redirect(
-		`${routes.api.download}?email=${formData.get("email")}&orderId=${formData.get("orderId")}`,
-	);
+  redirect(
+    `${routes.api.download}?email=${formData.get("email")}&orderId=${formData.get("orderId")}`
+  );
 }

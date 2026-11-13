@@ -77,13 +77,11 @@ const suggestedTask: Event = {
   title: "Review Project Proposal",
   date: new Date(2023, 5, 15, 15, 0),
   type: "todo",
-  description:
-    "Go through the project proposal and prepare feedback for the team meeting",
+  description: "Go through the project proposal and prepare feedback for the team meeting",
 };
 
 function getOverdueStatus(date: Date): string {
-  const diffInHours =
-    (currentDate.getTime() - date.getTime()) / (1000 * 60 * 60);
+  const diffInHours = (currentDate.getTime() - date.getTime()) / (1000 * 60 * 60);
   if (diffInHours < 24) return "text-yellow-600 bg-yellow-50";
   if (diffInHours < 48) return "text-orange-600 bg-orange-50";
   return "text-red-600 bg-red-50";
@@ -106,18 +104,12 @@ export function DailyEventsUpdated() {
     console.log(`Snoozed event ${id}`);
   };
 
-  const todayEvents = allEvents
-    .filter((event) => event.date >= currentDate)
-    .slice(0, 4);
-  const overdueEvents = allEvents
-    .filter((event) => event.date < currentDate)
-    .slice(0, 3);
+  const todayEvents = allEvents.filter((event) => event.date >= currentDate).slice(0, 4);
+  const overdueEvents = allEvents.filter((event) => event.date < currentDate).slice(0, 3);
 
   return (
     <div className="relative h-[1280px] w-[720px] overflow-hidden bg-gradient-to-b from-gray-50 to-gray-100 p-6 font-sans">
-      <h1 className="mb-6 text-3xl font-semibold text-gray-800">
-        Today's Events
-      </h1>
+      <h1 className="mb-6 text-3xl font-semibold text-gray-800">Today's Events</h1>
 
       {/* Featured Suggested Task */}
       <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
@@ -224,13 +216,11 @@ export function DailyEventsUpdated() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
-            className="fixed bottom-6 left-6 right-6 z-50"
+            className="fixed right-6 bottom-6 left-6 z-50"
           >
             <div className="space-y-4 rounded-lg bg-white p-4 shadow-lg">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-gray-800">
-                  Overdue Tasks
-                </h2>
+                <h2 className="text-lg font-semibold text-gray-800">Overdue Tasks</h2>
                 <button
                   onClick={() => setOverdueVisible(false)}
                   className="text-gray-500 hover:text-gray-700"
@@ -255,20 +245,18 @@ export function DailyEventsUpdated() {
                       })}
                     </span>
                   </div>
-                  <p className="text-sm">
-                    {event.description || "No additional details"}
-                  </p>
+                  <p className="text-sm">{event.description || "No additional details"}</p>
                   <div className="mt-2 flex space-x-2">
                     <button
                       onClick={() => completeEvent(event.id)}
-                      className="flex items-center justify-center rounded-md bg-white bg-opacity-50 px-3 py-1 text-sm transition-colors duration-300 hover:bg-opacity-75"
+                      className="bg-opacity-50 hover:bg-opacity-75 flex items-center justify-center rounded-md bg-white px-3 py-1 text-sm transition-colors duration-300"
                     >
                       <Check className="mr-1 h-4 w-4" />
                       Complete
                     </button>
                     <button
                       onClick={() => snoozeEvent(event.id)}
-                      className="flex items-center justify-center rounded-md bg-white bg-opacity-50 px-3 py-1 text-sm transition-colors duration-300 hover:bg-opacity-75"
+                      className="bg-opacity-50 hover:bg-opacity-75 flex items-center justify-center rounded-md bg-white px-3 py-1 text-sm transition-colors duration-300"
                     >
                       <Clock className="mr-1 h-4 w-4" />
                       Snooze

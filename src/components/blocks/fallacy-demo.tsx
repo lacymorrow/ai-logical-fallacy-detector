@@ -1,27 +1,27 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Textarea } from "@/components/ui/textarea"
-import { ExclamationTriangleIcon, ArrowRightIcon } from "@radix-ui/react-icons"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { ExclamationTriangleIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 
 export default function FallacyDemo() {
   const [text, setText] = useState(
-    "Since most experts agree that climate change is real, it must be true. Anyone who disagrees is clearly not educated enough to understand the science.",
-  )
-  const [analyzed, setAnalyzed] = useState(false)
+    "Since most experts agree that climate change is real, it must be true. Anyone who disagrees is clearly not educated enough to understand the science."
+  );
+  const [analyzed, setAnalyzed] = useState(false);
 
   const handleAnalyze = () => {
-    setAnalyzed(true)
-  }
+    setAnalyzed(true);
+  };
 
   const handleReset = () => {
-    setAnalyzed(false)
-  }
+    setAnalyzed(false);
+  };
 
   return (
-    <Card className="w-full max-w-md shadow-lg border-gray-200">
+    <Card className="w-full max-w-md border-gray-200 shadow-lg">
       <CardHeader>
         <CardTitle className="text-lg">Try LogicLens</CardTitle>
       </CardHeader>
@@ -36,9 +36,9 @@ export default function FallacyDemo() {
 
         {analyzed && (
           <div className="mt-4 space-y-3">
-            <div className="p-3 bg-red-50 border border-red-100 rounded-md">
+            <div className="rounded-md border border-red-100 bg-red-50 p-3">
               <div className="flex items-start">
-                <ExclamationTriangleIcon className="h-5 w-5 text-red-500 mt-0.5 mr-2" />
+                <ExclamationTriangleIcon className="mt-0.5 mr-2 h-5 w-5 text-red-500" />
                 <div>
                   <h4 className="font-medium text-red-700">Appeal to Authority</h4>
                   <p className="text-sm text-gray-600">
@@ -48,9 +48,9 @@ export default function FallacyDemo() {
               </div>
             </div>
 
-            <div className="p-3 bg-red-50 border border-red-100 rounded-md">
+            <div className="rounded-md border border-red-100 bg-red-50 p-3">
               <div className="flex items-start">
-                <ExclamationTriangleIcon className="h-5 w-5 text-red-500 mt-0.5 mr-2" />
+                <ExclamationTriangleIcon className="mt-0.5 mr-2 h-5 w-5 text-red-500" />
                 <div>
                   <h4 className="font-medium text-red-700">Ad Hominem</h4>
                   <p className="text-sm text-gray-600">
@@ -60,7 +60,7 @@ export default function FallacyDemo() {
               </div>
             </div>
 
-            <div className="text-sm text-gray-500 mt-2">
+            <div className="mt-2 text-sm text-gray-500">
               <p>2 fallacies detected in this text.</p>
             </div>
           </div>
@@ -79,6 +79,5 @@ export default function FallacyDemo() {
         )}
       </CardFooter>
     </Card>
-  )
+  );
 }
-

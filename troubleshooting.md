@@ -14,11 +14,11 @@ Remove the carets `^` from the packages in your `package.json` file.
 Force Client Side Rendering
 
 ```tsx
-'use client';
+"use client";
 import dynamic from "next/dynamic";
-const ReactApp = dynamic(() => import('./App'), { ssr: false });
+const ReactApp = dynamic(() => import("./App"), { ssr: false });
 
 export default function Page() {
-	return <ReactApp />;
+  return <ReactApp />;
 }
 ```

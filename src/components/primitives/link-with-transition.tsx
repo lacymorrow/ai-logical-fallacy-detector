@@ -10,13 +10,14 @@ import { Link as TransitionsLink } from "next-view-transitions";
 import { default as NextLink } from "next/link";
 import type React from "react";
 
-export const Link = ({
-	children,
-	...props
-}: React.ComponentProps<typeof NextLink>) => {
-	if (siteConfig?.behavior?.pageTransitions) {
-		return <TransitionsLink prefetch {...props}>{children}</TransitionsLink>;
-	}
+export const Link = ({ children, ...props }: React.ComponentProps<typeof NextLink>) => {
+  if (siteConfig?.behavior?.pageTransitions) {
+    return (
+      <TransitionsLink prefetch {...props}>
+        {children}
+      </TransitionsLink>
+    );
+  }
 
-	return <NextLink {...props}>{children}</NextLink>;
+  return <NextLink {...props}>{children}</NextLink>;
 };
