@@ -15,9 +15,11 @@ import { type AnalysisResult, FallacyType, type LogicalFallacy } from "@/types/f
  *  - a negative `startIndex` is caught only by the optional chain. Rewrite it to
  *    `charMap[i].push(fallacy)` and the first and third cases throw a TypeError
  *    mid-render, so the text never reaches the DOM.
- *  - an `endIndex` past the end is caught only by `i < textLength`. The second
- *    case survives the loss of either guard on its own and fails when both go,
- *    which is the shape a "simplify the loop" refactor would produce.
+ *  - an `endIndex` past the end is covered by either guard alone: `i < textLength`
+ *    or the optional chain. The second case therefore cannot tell them apart
+ *    (dropping `i < textLength` leaves all three tests passing, measured on
+ *    PR #38). It exists to kill the both-guards-removed mutant, which is the
+ *    shape a "simplify the loop" refactor would produce.
  *
  * In every case the whole text has to render, so each case asserts the rendered
  * text is byte-for-byte the input. The span counts pin the other half: dropping
