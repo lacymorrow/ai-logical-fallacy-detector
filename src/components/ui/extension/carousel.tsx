@@ -185,8 +185,11 @@ const Carousel = forwardRef<
       >
         <div
           {...props}
+          // biome-ignore lint/a11y/noNoninteractiveTabindex: ARIA carousel pattern, the region is deliberately focusable so arrow keys reach onKeyDownCapture
           tabIndex={0}
           ref={ref}
+          role="region"
+          aria-roledescription="carousel"
           onKeyDownCapture={handleKeyDown}
           className={cn("relative grid w-full gap-2 focus:outline-none", className)}
           dir={direction}
@@ -273,7 +276,17 @@ const SliderThumbItem = forwardRef<
     <div
       {...props}
       ref={ref}
+      role="button"
+      tabIndex={0}
+      aria-label={`Go to slide ${index + 1}`}
+      aria-current={isSlideActive}
       onClick={() => onThumbClick(index)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onThumbClick(index);
+        }
+      }}
       className={cn(
         "flex min-w-0 shrink-0 grow-0 basis-1/3 bg-background p-1",
         `${orientation === "vertical" ? "pb-1" : "pr-1"}`,

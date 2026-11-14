@@ -15,6 +15,7 @@
  *   BONES_DIR=~/repo/bones bun scripts/...      # local Bones checkout (default: fetch tree from GitHub)
  *   BONES_REF=lac/bones-seams                   # ref inside BONES_DIR to compare against (default origin/main)
  */
+import { $ } from "bun";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 
@@ -33,11 +34,11 @@ async function bonesFiles(): Promise<Set<string>> {
   const dir = process.env.BONES_DIR;
   if (dir) {
     const ref = process.env.BONES_REF ?? "origin/main";
-    const out = await Bun.$`git -C ${dir} ls-tree -r ${ref} --name-only`.text();
+    const out = await $`git -C ${dir} ls-tree -r ${ref} --name-only`.text();
     return new Set(out.split("\n").filter(Boolean));
   }
   const out =
-    await Bun.$`gh api repos/shipkit-io/bones/git/trees/main?recursive=1 --jq '.tree[].path'`.text();
+    await $`gh api repos/shipkit-io/bones/git/trees/main?recursive=1 --jq '.tree[].path'`.text();
   return new Set(out.split("\n").filter(Boolean));
 }
 
@@ -51,7 +52,7 @@ function resolveImport(from: string, spec: string): string | null {
   const candidates = [
     base,
     ...exts.map((e) => base + e),
-    ...exts.map((e) => join(base, "index" + e)),
+    ...exts.map((e) => join(base, `index${e}`)),
   ];
   for (const c of candidates) {
     const full = join(root, c);

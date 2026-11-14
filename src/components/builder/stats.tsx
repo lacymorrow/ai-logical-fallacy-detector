@@ -47,9 +47,9 @@ export const Stats = ({
             "grid-cols-1 md:grid-cols-2 lg:grid-cols-4": columns === 4,
           })}
         >
-          {stats.map((stat, index) => (
+          {stats.map((stat) => (
             <div
-              key={index}
+              key={stat.label}
               className="rounded-lg border border-gray-200 p-6 text-center transition-shadow hover:shadow-lg"
             >
               <div className="mb-2 text-4xl font-bold text-primary">{stat.value}</div>
