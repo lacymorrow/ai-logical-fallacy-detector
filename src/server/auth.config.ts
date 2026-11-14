@@ -36,7 +36,7 @@ export const authOptions: NextAuthConfig = {
   // 	},
   // },
   callbacks: {
-    async signIn({ user, account, profile }) {
+    signIn({ user, account, profile }) {
       if (!user.id) return false;
 
       if (account?.provider === "github-verify") {
