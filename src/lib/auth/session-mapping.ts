@@ -112,6 +112,7 @@ export function mapClerkSession(
     id: user.id,
     email: primary?.emailAddress ?? "",
     name: clerkName(user),
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- an empty imageUrl must become null
     image: user.imageUrl || null,
     emailVerified: primary?.verification?.status === "verified" ? new Date() : null,
     role,

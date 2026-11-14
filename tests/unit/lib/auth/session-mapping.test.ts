@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { mapClerkSession } from "@/lib/auth/session-mapping";
 
 /**
@@ -27,6 +27,15 @@ const clientUser = {
 };
 
 describe("mapClerkSession", () => {
+  // emailVerified is stamped with `new Date()`; freeze the clock so two calls compare equal.
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2030-01-01T00:00:00.000Z"));
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it("returns null when signed out", () => {
     expect(mapClerkSession(null, null)).toBeNull();
     expect(mapClerkSession(undefined, 0)).toBeNull();
