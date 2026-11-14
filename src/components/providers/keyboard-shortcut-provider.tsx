@@ -115,8 +115,8 @@ export function KeyboardShortcutProvider({
 
 // No-op fallback for use outside KeyboardShortcutProvider (e.g. not-found pages)
 const noopContext: KeyboardShortcutContextProps = {
-  registerShortcut: () => () => {},
-  triggerAction: () => {},
+  registerShortcut: () => () => undefined,
+  triggerAction: () => undefined,
 };
 
 /**

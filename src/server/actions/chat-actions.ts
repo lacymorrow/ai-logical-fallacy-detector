@@ -37,7 +37,7 @@ export async function chat(data: z.infer<typeof schemas.chat>) {
       async start(controller) {
         try {
           for await (const chunk of completion) {
-            const content = chunk.choices[0]?.delta?.content || "";
+            const content = chunk.choices[0]?.delta?.content ?? "";
             controller.enqueue(encoder.encode(content));
           }
           controller.close();

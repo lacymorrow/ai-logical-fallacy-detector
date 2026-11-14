@@ -46,6 +46,7 @@ const nebulaClouds = Array.from({ length: 5 }, (_, index) => ({
 // nodejs: the edge bundle pulls in instrumentation.ts, whose evlog dynamic imports Vercel rejects on edge.
 export const runtime = "nodejs";
 
+// eslint-disable-next-line @typescript-eslint/require-await -- route handler signature
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
