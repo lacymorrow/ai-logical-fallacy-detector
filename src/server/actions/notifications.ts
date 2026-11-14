@@ -208,19 +208,25 @@ export async function getNotificationPreferences() {
 
     // Format preferences
     const preferences = {
-      channels: Object.fromEntries(channels?.map((c) => [c.type, c.enabled]) ?? []) as Record<
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string and 0 must fall back, not just nullish
+      channels: Object.fromEntries(channels?.map((c) => [c.type, c.enabled]) || []) as Record<
         (typeof notificationChannelType.enumValues)[number],
         boolean
       >,
       types: Object.fromEntries(
-        types?.map((t) => [t.type, (JSON.parse(t.channels ?? "[]") as string[]).length > 0]) ?? []
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string and 0 must fall back, not just nullish
+        types?.map((t) => [t.type, (JSON.parse(t.channels || "[]") as string[]).length > 0]) || []
       ) as Record<(typeof notificationType.enumValues)[number], boolean>,
       schedule: types?.[0]
         ? {
-            timezone: types[0].timezone ?? "UTC",
-            quietHoursStart: types[0].quietHoursStart ?? "22:00",
-            quietHoursEnd: types[0].quietHoursEnd ?? "08:00",
-            frequency: types[0].frequency ?? "instant",
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string and 0 must fall back, not just nullish
+            timezone: types[0].timezone || "UTC",
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string and 0 must fall back, not just nullish
+            quietHoursStart: types[0].quietHoursStart || "22:00",
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string and 0 must fall back, not just nullish
+            quietHoursEnd: types[0].quietHoursEnd || "08:00",
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string and 0 must fall back, not just nullish
+            frequency: types[0].frequency || "instant",
           }
         : {
             timezone: "UTC",
