@@ -3,21 +3,6 @@ import type { NextAuthConfig } from "next-auth";
 import { providers } from "./auth.providers";
 import { AuthService } from "@/server/services/auth-service";
 
-// Extend the default session user type
-declare module "next-auth" {
-  interface Session {
-    user: {
-      id: string;
-      name: string | null;
-      email: string | null;
-      image: string | null;
-      bio: string | null;
-      githubUsername: string | null;
-      theme?: "light" | "dark" | "system";
-      emailNotifications?: boolean;
-      emailVerified: Date | null;
-    };
-  }
 }
 
 /**
