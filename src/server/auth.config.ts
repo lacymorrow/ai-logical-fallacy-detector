@@ -3,8 +3,6 @@ import type { NextAuthConfig } from "next-auth";
 import { providers } from "./auth.providers";
 import { AuthService } from "@/server/services/auth-service";
 
-}
-
 /**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
  *
