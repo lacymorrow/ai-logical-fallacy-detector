@@ -208,19 +208,19 @@ export async function getNotificationPreferences() {
 
     // Format preferences
     const preferences = {
-      channels: Object.fromEntries(channels?.map((c) => [c.type, c.enabled]) || []) as Record<
+      channels: Object.fromEntries(channels?.map((c) => [c.type, c.enabled]) ?? []) as Record<
         (typeof notificationChannelType.enumValues)[number],
         boolean
       >,
       types: Object.fromEntries(
-        types?.map((t) => [t.type, (JSON.parse(t.channels || "[]") as string[]).length > 0]) || []
+        types?.map((t) => [t.type, (JSON.parse(t.channels ?? "[]") as string[]).length > 0]) ?? []
       ) as Record<(typeof notificationType.enumValues)[number], boolean>,
       schedule: types?.[0]
         ? {
-            timezone: types[0].timezone || "UTC",
-            quietHoursStart: types[0].quietHoursStart || "22:00",
-            quietHoursEnd: types[0].quietHoursEnd || "08:00",
-            frequency: types[0].frequency || "instant",
+            timezone: types[0].timezone ?? "UTC",
+            quietHoursStart: types[0].quietHoursStart ?? "22:00",
+            quietHoursEnd: types[0].quietHoursEnd ?? "08:00",
+            frequency: types[0].frequency ?? "instant",
           }
         : {
             timezone: "UTC",

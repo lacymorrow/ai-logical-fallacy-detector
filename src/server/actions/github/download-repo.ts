@@ -14,6 +14,7 @@ import { redirect } from "next/navigation";
  * Using redirect() instead of returning Response objects avoids
  * serialization issues between Server and Client Components.
  */
+// eslint-disable-next-line @typescript-eslint/require-await -- server actions must be async
 export async function downloadRepo() {
   // Redirect to the download route handler
   redirect(routes.api.download);
@@ -28,8 +29,11 @@ export async function downloadRepo() {
  * Using redirect() instead of returning Response objects avoids
  * serialization issues between Server and Client Components.
  */
+// eslint-disable-next-line @typescript-eslint/require-await -- server actions must be async
 export async function downloadRepoAnonymously(formData: FormData) {
-  redirect(
-    `${routes.api.download}?email=${formData.get("email")}&orderId=${formData.get("orderId")}`
-  );
+  const emailValue = formData.get("email");
+  const email = typeof emailValue === "string" ? emailValue : "";
+  const orderIdValue = formData.get("orderId");
+  const orderId = typeof orderIdValue === "string" ? orderIdValue : "";
+  redirect(`${routes.api.download}?email=${email}&orderId=${orderId}`);
 }
