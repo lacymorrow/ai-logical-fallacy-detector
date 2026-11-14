@@ -2,7 +2,7 @@
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import type { AnalysisResult, LogicalFallacy } from "@/types/fallacy";
+import { type AnalysisResult, FallacyType, type LogicalFallacy } from "@/types/fallacy";
 import { AnimatePresence, motion } from "framer-motion";
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -27,25 +27,25 @@ interface FallacyAnnotationProps {
 const getFallacyColor = (fallacy: LogicalFallacy, opacity: number) => {
   const opacityStr = opacity.toString();
   switch (fallacy.type) {
-    case "AD_HOMINEM":
+    case FallacyType.AdHominem:
       return `rgba(239, 68, 68, ${opacityStr})`; // red-500
-    case "STRAW_MAN":
+    case FallacyType.StrawMan:
       return `rgba(249, 115, 22, ${opacityStr})`; // orange-500
-    case "FALSE_EQUIVALENCE":
+    case FallacyType.FalseEquivalence:
       return `rgba(234, 179, 8, ${opacityStr})`; // yellow-500
-    case "APPEAL_TO_AUTHORITY":
+    case FallacyType.AppealToAuthority:
       return `rgba(132, 204, 22, ${opacityStr})`; // lime-500
-    case "SLIPPERY_SLOPE":
+    case FallacyType.SlipperySlope:
       return `rgba(16, 185, 129, ${opacityStr})`; // emerald-500
-    case "FALSE_DICHOTOMY":
+    case FallacyType.FalseDichotomy:
       return `rgba(6, 182, 212, ${opacityStr})`; // cyan-500
-    case "CIRCULAR_REASONING":
+    case FallacyType.CircularReasoning:
       return `rgba(59, 130, 246, ${opacityStr})`; // blue-500
-    case "HASTY_GENERALIZATION":
+    case FallacyType.HastyGeneralization:
       return `rgba(99, 102, 241, ${opacityStr})`; // indigo-500
-    case "APPEAL_TO_EMOTION":
+    case FallacyType.AppealToEmotion:
       return `rgba(168, 85, 247, ${opacityStr})`; // purple-500
-    case "RED_HERRING":
+    case FallacyType.RedHerring:
       return `rgba(236, 72, 153, ${opacityStr})`; // pink-500
     default:
       if (fallacy.confidence > 0.8) return `rgba(239, 68, 68, ${opacityStr})`; // red-500
@@ -308,7 +308,7 @@ export function StreamingAnalysis({
 
         buffer += decoder.decode(value, { stream: true });
         const lines = buffer.split("\n");
-        buffer = lines.pop() || ""; // Keep the last incomplete line in the buffer
+        buffer = lines.pop() ?? ""; // Keep the last incomplete line in the buffer
 
         for (const line of lines) {
           if (line.startsWith("data: ")) {
@@ -320,7 +320,7 @@ export function StreamingAnalysis({
                 );
                 const data = JSON.parse(jsonStr);
                 console.log(
-                  `[${instanceId.current}] Parsed stream data with ${data.fallacies?.length || 0} fallacies`
+                  `[${instanceId.current}] Parsed stream data with ${data.fallacies?.length ?? 0} fallacies`
                 );
 
                 // Use debounced update to reduce UI flickering
@@ -557,7 +557,7 @@ export function StreamingAnalysis({
 
     // Get highlight color for hover state
     const getHighlightColor = () => {
-      const fallacy = hoveredFallacyInGroup || primaryFallacy;
+      const fallacy = hoveredFallacyInGroup ?? primaryFallacy;
       return getFallacyColor(fallacy, 0.15);
     };
 
@@ -645,8 +645,7 @@ export function StreamingAnalysis({
   const toggleStickyFallacy = useCallback((fallacy: LogicalFallacy) => {
     setStickiedFallacy((prev) => {
       if (
-        prev &&
-        prev.type === fallacy.type &&
+        prev?.type === fallacy.type &&
         prev.startIndex === fallacy.startIndex &&
         prev.endIndex === fallacy.endIndex
       ) {

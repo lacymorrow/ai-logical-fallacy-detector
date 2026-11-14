@@ -72,7 +72,7 @@ function checkRateLimit(ip: string): {
 export async function POST(request: Request) {
   try {
     // Get request ID if provided
-    const requestId = request.headers.get("x-request-id") || `req-${Date.now()}`;
+    const requestId = request.headers.get("x-request-id") ?? `req-${Date.now()}`;
     console.log(`Received analysis request [${requestId}]`);
 
     // Get IP for rate limiting

@@ -26,6 +26,7 @@ const createLogFunction =
     span.end();
 
     // Use console[level] if it exists, otherwise fall back to console.log
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- invoked as a bare function below, matching the original behaviour
     const consoleMethod = console[level] ?? console.log;
     consoleMethod(message, ...(error ? [error] : []), metadata);
   };

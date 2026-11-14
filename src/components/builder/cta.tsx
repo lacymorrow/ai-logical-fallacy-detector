@@ -55,11 +55,11 @@ export const CTA = ({
             {description}
           </p>
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
-            <Button asChild variant={primaryButton.variant || "default"} size="lg">
+            <Button asChild variant={primaryButton.variant ?? "default"} size="lg">
               <a href={primaryButton.link}>{primaryButton.text}</a>
             </Button>
             {secondaryButton && (
-              <Button asChild variant={secondaryButton.variant || "outline"} size="lg">
+              <Button asChild variant={secondaryButton.variant ?? "outline"} size="lg">
                 <a href={secondaryButton.link}>{secondaryButton.text}</a>
               </Button>
             )}
