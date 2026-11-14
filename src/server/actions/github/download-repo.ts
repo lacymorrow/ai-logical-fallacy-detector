@@ -3,7 +3,6 @@
 import { routes } from "@/config/routes";
 import { logger } from "@/lib/logger";
 import { auth } from "@/server/auth";
-import { getOrdersByEmail } from "@/lib/lemonsqueezy";
 import { redirect } from "next/navigation";
 
 /**

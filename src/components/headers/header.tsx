@@ -26,7 +26,6 @@ import { useSignInRedirectUrl } from "@/hooks/use-auth-redirect";
 import { cn } from "@/lib/utils";
 import styles from "@/styles/header.module.css";
 import type { User } from "@/types/user";
-import { BuyButton } from "../buttons/lemonsqueezy-buy-button";
 
 interface HeaderProps {
   navLinks?: NavLink[];
@@ -275,51 +274,11 @@ export const Header: React.FC<HeaderProps> = ({
 
             <UserMenu user={user} />
 
-            {!isLoggedIn &&
-              (animatedCTAOnScroll ? (
-                <AnimatePresence mode="wait">
-                  {scrollY > animatedCTAOnScroll ? (
-                    <motion.div
-                      key="compact"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      transition={{ duration: 0.1 }}
-                    >
-                      <TooltipProvider delayDuration={0}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <div className="relative -m-1 p-1">
-                              <BuyButton />
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent
-                            side="bottom"
-                            sideOffset={3}
-                            className="-mt-3 border-none bg-transparent p-0 text-xs text-muted-foreground shadow-none select-none data-[state=delayed-open]:animate-fadeDown"
-                          >
-                            <LoginButton className="hover:text-foreground">or Login</LoginButton>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="full"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      transition={{ duration: 0.1 }}
-                    >
-                      <LoginButton variant="outline" nextUrl={routes.app.dashboard}>
-                        Dashboard
-                      </LoginButton>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              ) : (
-                <BuyButton />
-              ))}
+            {!isLoggedIn && (
+              <LoginButton variant="outline" nextUrl={routes.app.dashboard}>
+                Dashboard
+              </LoginButton>
+            )}
           </div>
         )}
       </nav>

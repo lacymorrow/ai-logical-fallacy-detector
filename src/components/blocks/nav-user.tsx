@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/sidebar";
 import { env } from "@/env";
 import { useIsAdmin } from "@/hooks/use-is-admin";
-import { useSubscription } from "@/hooks/use-subscription";
 import { cn } from "@/lib/utils";
 
 interface NavUserProps {
@@ -26,7 +25,6 @@ export function NavUser({ className, showUpgrade = true }: NavUserProps) {
   const { data: session, status } = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const isAdmin = useIsAdmin();
-  const { hasActiveSubscription } = useSubscription();
   const isLoading = status === "loading";
 
   const userInitials = session?.user?.name
@@ -44,7 +42,6 @@ export function NavUser({ className, showUpgrade = true }: NavUserProps) {
           setIsOpen={setIsOpen}
           user={session?.user}
           showUpgrade={showUpgrade}
-          hasActiveSubscription={hasActiveSubscription}
           showOnboarding={
             env.NEXT_PUBLIC_FEATURE_VERCEL_INTEGRATION_ENABLED &&
             env.NEXT_PUBLIC_FEATURE_GITHUB_API_ENABLED &&

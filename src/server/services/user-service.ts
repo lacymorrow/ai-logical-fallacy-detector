@@ -34,7 +34,6 @@ import type { User } from "@/server/db/schema";
 import { projectMembers, teamMembers, userFiles, users } from "@/server/db/schema";
 import { apiKeyService } from "./api-key-service";
 import { BaseService } from "./base-service";
-import { PaymentService } from "./payment-service";
 import { teamService } from "./team-service";
 
 /**
@@ -116,14 +115,6 @@ export class UserService extends BaseService<typeof users> {
         // Create personal team for new user
         await this.createPersonalTeam(newUser.id);
 
-        // Check for existing payments
-        const hasPaid = await PaymentService.getUserPaymentStatus(newUser.id);
-        if (hasPaid) {
-          logger.info("Found existing payment for new user", {
-            userId: newUser.id,
-          });
-        }
-
         dbUser = newUser;
       } else {
         throw new Error(`Failed to create user: ${authUser.id}`);
@@ -156,14 +147,6 @@ export class UserService extends BaseService<typeof users> {
         if (updatedUser) {
           dbUser = updatedUser;
         }
-      }
-
-      // Check for existing payments for existing users too
-      const hasPaid = await PaymentService.getUserPaymentStatus(dbUser.id);
-      if (hasPaid) {
-        logger.info("Found existing payment for existing user", {
-          userId: dbUser.id,
-        });
       }
     }
 
