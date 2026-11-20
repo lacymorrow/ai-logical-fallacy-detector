@@ -233,26 +233,6 @@ const table = {
     docs: "https://console.anthropic.com/settings/keys",
   },
 
-  // Payments
-  LEMONSQUEEZY: {
-    label: "Lemon Squeezy payments",
-    env: ["LEMONSQUEEZY_API_KEY", "LEMONSQUEEZY_STORE_ID"],
-    disable: "DISABLE_LEMONSQUEEZY",
-    docs: "https://app.lemonsqueezy.com/settings/api",
-  },
-  POLAR: {
-    label: "Polar payments",
-    env: ["POLAR_ACCESS_TOKEN"],
-    disable: "DISABLE_POLAR",
-    docs: "https://polar.sh/settings",
-  },
-  STRIPE: {
-    label: "Stripe payments",
-    env: ["STRIPE_SECRET_KEY", "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"],
-    disable: "DISABLE_STRIPE",
-    docs: "https://dashboard.stripe.com/apikeys",
-  },
-
   // Storage
   S3: {
     label: "S3 storage",
