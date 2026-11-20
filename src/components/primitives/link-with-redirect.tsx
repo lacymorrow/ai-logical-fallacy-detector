@@ -23,9 +23,7 @@ export const LinkWithRedirect = ({
   ...props
 }: LinkWithRedirectProps) => {
   const pathname = usePathname();
-  if (!redirectTo) {
-    redirectTo = pathname;
-  }
+  redirectTo ??= pathname;
 
   const nextUrl = useMemo(() => {
     if (redirectTo && typeof window !== "undefined") {

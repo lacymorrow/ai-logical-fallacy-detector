@@ -61,6 +61,7 @@ export function FallacyDetector() {
     updateText(e.target.value);
   };
 
+  // eslint-disable-next-line @typescript-eslint/require-await -- awaited by callers; kept async
   const analyzeText = async () => {
     const currentText = textRef.current;
 
@@ -229,6 +230,7 @@ export function FallacyDetector() {
               text={text}
               onComplete={handleStreamComplete}
               onError={handleStreamError}
+              // eslint-disable-next-line react-hooks/refs -- controller is created in the click handler, read once per render
               abortController={abortControllerRef.current}
             />
           )}

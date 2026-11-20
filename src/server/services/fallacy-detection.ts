@@ -159,7 +159,7 @@ Format each fallacy as:
     const BATCH_INTERVAL = 1000; // Only yield updates once per second
 
     for await (const chunk of stream) {
-      const content = chunk.choices[0]?.delta?.content || "";
+      const content = chunk.choices[0]?.delta?.content ?? "";
       if (!content) continue;
 
       buffer += content;
