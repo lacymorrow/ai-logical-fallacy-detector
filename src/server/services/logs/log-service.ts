@@ -86,7 +86,11 @@ export async function createLog(logData: {
 	metadata?: Record<string, unknown>;
 	apiKey: string;
 }) {
-	const apiKeyRecord = await db?.query.apiKeys.findFirst({
+	if (!db) {
+		throw new Error("Database is not initialized");
+	}
+
+	const apiKeyRecord = await db.query.apiKeys.findFirst({
 		where: eq(apiKeys.key, logData.apiKey),
 	});
 
@@ -100,7 +104,7 @@ export async function createLog(logData: {
 			: logData.timestamp;
 
 	const [createdLog] = await db
-		?.insert(logs)
+		.insert(logs)
 		.values({
 			timestamp: Number.isNaN(timestamp.getTime()) ? new Date() : timestamp,
 			level: logData.level,

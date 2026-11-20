@@ -8,16 +8,17 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
   const posthogKey = env?.NEXT_PUBLIC_POSTHOG_KEY;
   const posthogHost = env?.NEXT_PUBLIC_POSTHOG_HOST;
 
-  if (!posthogKey || !posthogHost) {
-    return children;
-  }
-
   useEffect(() => {
+    if (!posthogKey || !posthogHost) return;
     posthog.init(posthogKey, {
       api_host: posthogHost,
       person_profiles: "identified_only", // or 'always' to create profiles for anonymous users as well
     });
-  }, []);
+  }, [posthogKey, posthogHost]);
+
+  if (!posthogKey || !posthogHost) {
+    return children;
+  }
 
   return (
     <PHProvider client={posthog}>
