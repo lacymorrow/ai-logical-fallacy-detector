@@ -46,10 +46,46 @@ describe("isAdmin", () => {
     expect(await isAdmin({ email: 12345 as never })).toBe(false);
   });
 
-  it("returns true when email matches the static admin email list (config check)", async () => {
+  it("returns true when the static admin list matches an account with a verified email", async () => {
+    const db = getTestDb();
+    await db.insert(users).values({
+      id: "config-admin-verified",
+      email: "verified@config.shipkit.test",
+      emailVerified: new Date(),
+    });
+
     const spy = vi.spyOn(adminConfig, "isAdminByEmailConfig").mockReturnValue(true);
     try {
-      expect(await isAdmin({ email: "anything@example.com" })).toBe(true);
+      expect(await isAdmin({ email: "verified@config.shipkit.test" })).toBe(true);
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
+  // Regression guard for the LAC-5048 / LAC-5245 hardening: the static config
+  // check used to run against the raw email string alone, so anyone who could
+  // present a listed address was an admin whether or not they owned it. The
+  // config match must now also find an account with a verified email.
+  it("returns false when the static admin list matches an email with no account at all", async () => {
+    const spy = vi.spyOn(adminConfig, "isAdminByEmailConfig").mockReturnValue(true);
+    try {
+      expect(await isAdmin({ email: "nobody@config.shipkit.test" })).toBe(false);
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
+  it("returns false when the static admin list matches an unverified account", async () => {
+    const db = getTestDb();
+    await db.insert(users).values({
+      id: "config-admin-unverified",
+      email: "unverified@config.shipkit.test",
+      emailVerified: null,
+    });
+
+    const spy = vi.spyOn(adminConfig, "isAdminByEmailConfig").mockReturnValue(true);
+    try {
+      expect(await isAdmin({ email: "unverified@config.shipkit.test" })).toBe(false);
     } finally {
       spy.mockRestore();
     }

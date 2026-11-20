@@ -201,6 +201,7 @@ export function FallacyDetector() {
               <div className="flex flex-wrap gap-2">
                 {examples.map((example, index) => (
                   <Button
+                    // biome-ignore lint/suspicious/noArrayIndexKey: static example list, never reordered
                     key={index}
                     variant="outline"
                     size="sm"

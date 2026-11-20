@@ -130,23 +130,28 @@ export function FallacyLegend() {
               {fallacyDefinitions.map(({ type, description }) => {
                 const color = getFallacyColor(type, 1);
                 return (
-                  <div
-                    key={type}
-                    className="relative flex cursor-help items-center text-xs"
-                    onMouseEnter={() => setHoveredFallacy(type)}
-                    onMouseLeave={() => setHoveredFallacy(null)}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setStickiedFallacy((prev) => (prev === type ? null : type));
-                    }}
-                  >
-                    <span
-                      className="mr-2 inline-block h-3 w-3 flex-shrink-0 rounded-full"
-                      style={{ backgroundColor: color }}
-                    />
-                    <span className="text-gray-700 dark:text-gray-300">
-                      {type.replace(/_/g, " ")}
-                    </span>
+                  <div key={type} className="relative text-xs">
+                    <button
+                      type="button"
+                      className="flex w-full cursor-help items-center text-left"
+                      aria-pressed={stickiedFallacy === type}
+                      onMouseEnter={() => setHoveredFallacy(type)}
+                      onMouseLeave={() => setHoveredFallacy(null)}
+                      onFocus={() => setHoveredFallacy(type)}
+                      onBlur={() => setHoveredFallacy(null)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setStickiedFallacy((prev) => (prev === type ? null : type));
+                      }}
+                    >
+                      <span
+                        className="mr-2 inline-block h-3 w-3 flex-shrink-0 rounded-full"
+                        style={{ backgroundColor: color }}
+                      />
+                      <span className="text-gray-700 dark:text-gray-300">
+                        {type.replace(/_/g, " ")}
+                      </span>
+                    </button>
 
                     <AnimatePresence>
                       {(hoveredFallacy === type || stickiedFallacy === type) && (
