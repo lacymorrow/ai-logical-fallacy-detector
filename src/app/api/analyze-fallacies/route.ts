@@ -104,7 +104,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    console.log(`Request body [${requestId}]:`, { ...body, text: body.text.slice(0, 50) + "..." });
+    console.log(`Request body [${requestId}]:`, { ...body, text: `${body.text.slice(0, 50)}...` });
 
     const { text, stream, skipCache } = requestSchema.parse(body);
     console.log(`Parsed request [${requestId}]:`, { stream, skipCache });

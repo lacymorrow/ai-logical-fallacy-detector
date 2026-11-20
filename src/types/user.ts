@@ -16,6 +16,9 @@ export interface User {
   image: string | null;
   role?: UserRole;
   theme?: "light" | "dark" | "system";
+  // Mirrors users.email_notifications in src/server/db/schema.ts; read back onto
+  // the session in src/server/auth.config.ts.
+  emailNotifications?: boolean;
   bio?: string | null;
   githubUsername?: string | null;
   vercelConnectionAttemptedAt?: Date | null;

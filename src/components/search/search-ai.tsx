@@ -207,7 +207,7 @@ export const SearchAi = ({ ...props }: ButtonProps) => {
         <span className="inline-flex lg:hidden">Search...</span>
         <kbd className="pointer-events-none absolute top-[0.3rem] right-[0.3rem] hidden h-5 items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 select-none lg:flex">
           <span className="text-xs" suppressHydrationWarning>
-            {is.mac() ? "⌘" : "Ctrl"}
+            {is.mac ? "⌘" : "Ctrl"}
           </span>
           K
         </kbd>

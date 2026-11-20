@@ -6,36 +6,15 @@ describe("useCopyToClipboard", () => {
   // Mock clipboard API
   const mockWriteText = vi.fn(() => Promise.resolve());
   const mockExecCommand = vi.fn(() => true);
-  const originalNavigator = global.navigator;
-  const originalDocument = global.document;
-
+  // jsdom does not implement execCommand, so define it on the real document.
+  // Replacing global.document with a spread copy breaks React 19's renderHook,
+  // which needs the real document.body.
   beforeEach(() => {
     vi.useFakeTimers();
-    Object.defineProperty(global, "navigator", {
-      value: {
-        clipboard: {
-          writeText: mockWriteText,
-        },
-      },
-      writable: true,
-    });
-
-    // Mock document methods for fallback
-    Object.defineProperty(global, "document", {
-      value: {
-        ...originalDocument,
-        execCommand: mockExecCommand,
-        createElement: vi.fn().mockReturnValue({
-          value: "",
-          style: {},
-          select: vi.fn(),
-          focus: vi.fn(),
-        }),
-        body: {
-          appendChild: vi.fn(),
-          removeChild: vi.fn(),
-        },
-      },
+    vi.stubGlobal("navigator", { clipboard: { writeText: mockWriteText } });
+    Object.defineProperty(document, "execCommand", {
+      value: mockExecCommand,
+      configurable: true,
       writable: true,
     });
   });
@@ -43,14 +22,8 @@ describe("useCopyToClipboard", () => {
   afterEach(() => {
     vi.useRealTimers();
     vi.clearAllMocks();
-    Object.defineProperty(global, "navigator", {
-      value: originalNavigator,
-      writable: true,
-    });
-    Object.defineProperty(global, "document", {
-      value: originalDocument,
-      writable: true,
-    });
+    vi.unstubAllGlobals();
+    Reflect.deleteProperty(document, "execCommand");
   });
 
   test("should copy text to clipboard and set isCopied to true", async () => {
@@ -104,10 +77,7 @@ describe("useCopyToClipboard", () => {
 
   test("should handle missing clipboard API gracefully", async () => {
     // Remove clipboard API but keep document.execCommand for fallback
-    Object.defineProperty(global, "navigator", {
-      value: {},
-      writable: true,
-    });
+    vi.stubGlobal("navigator", {});
 
     const { result } = renderHook(() => useCopyToClipboard());
 

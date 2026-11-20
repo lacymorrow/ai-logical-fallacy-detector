@@ -16,7 +16,6 @@ import { ShortcutAction, type ShortcutActionType } from "@/config/keyboard-short
 import { routes } from "@/config/routes";
 import { useSignInRedirectUrl } from "@/hooks/use-auth-redirect";
 import { useIsAdmin } from "@/hooks/use-is-admin";
-import { useSubscription } from "@/hooks/use-subscription";
 import { cn } from "@/lib/utils";
 import { updateTheme } from "@/server/actions/settings";
 import type { User } from "@/types/user";
@@ -38,7 +37,6 @@ export const UserMenu = ({
   const { data: session, status } = useSession();
   const signInRedirectUrl = useSignInRedirectUrl();
   const [isOpen, setIsOpen] = React.useState(false);
-  const { hasActiveSubscription } = useSubscription();
   const router = useRouter();
   const isAdmin = useIsAdmin();
 
@@ -206,7 +204,6 @@ export const UserMenu = ({
           user={currentUser}
           isAdmin={isAdmin}
           showUpgrade={showUpgrade}
-          hasActiveSubscription={hasActiveSubscription}
           theme={theme}
           handleThemeChange={handleThemeChange}
         >

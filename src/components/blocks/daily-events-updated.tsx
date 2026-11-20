@@ -129,6 +129,7 @@ export function DailyEventsUpdated() {
         <p className="text-sm text-blue-600">{suggestedTask.description}</p>
         <div className="mt-3 flex space-x-2">
           <button
+            type="button"
             onClick={() => completeEvent(suggestedTask.id)}
             className="flex items-center justify-center rounded-md bg-blue-100 px-3 py-1 text-sm text-blue-700 transition-colors duration-300 hover:bg-blue-200"
           >
@@ -136,6 +137,7 @@ export function DailyEventsUpdated() {
             Complete
           </button>
           <button
+            type="button"
             onClick={() => snoozeEvent(suggestedTask.id)}
             className="flex items-center justify-center rounded-md bg-blue-100 px-3 py-1 text-sm text-blue-700 transition-colors duration-300 hover:bg-blue-200"
           >
@@ -154,13 +156,15 @@ export function DailyEventsUpdated() {
               expandedEvent === event.id ? "h-32" : "h-16"
             } ${completedEvents.includes(event.id) ? "opacity-50" : ""}`}
           >
-            <div
-              className="flex h-16 cursor-pointer items-center justify-between px-4"
+            <button
+              type="button"
+              className="flex h-16 w-full cursor-pointer items-center justify-between px-4 text-left"
+              aria-expanded={expandedEvent === event.id}
               onClick={() => toggleExpand(event.id)}
             >
-              <div className="flex items-center space-x-3">
-                <div
-                  className={`h-2 w-2 rounded-full ${
+              <span className="flex items-center space-x-3">
+                <span
+                  className={`block h-2 w-2 rounded-full ${
                     event.type === "reminder"
                       ? "bg-blue-400"
                       : event.type === "todo"
@@ -175,13 +179,13 @@ export function DailyEventsUpdated() {
                   })}
                 </span>
                 <span className="text-base text-gray-900">{event.title}</span>
-              </div>
+              </span>
               <ChevronRight
                 className={`h-5 w-5 text-gray-400 transition-transform duration-300 ${
                   expandedEvent === event.id ? "rotate-90 transform" : ""
                 }`}
               />
-            </div>
+            </button>
             {expandedEvent === event.id && (
               <div className="px-4 pb-4">
                 <p className="mb-2 text-sm text-gray-600">
@@ -189,6 +193,7 @@ export function DailyEventsUpdated() {
                 </p>
                 <div className="flex space-x-2">
                   <button
+                    type="button"
                     onClick={() => completeEvent(event.id)}
                     className="flex items-center justify-center rounded-md bg-green-50 px-3 py-1 text-sm text-green-700 transition-colors duration-300 hover:bg-green-100"
                   >
@@ -196,6 +201,7 @@ export function DailyEventsUpdated() {
                     Complete
                   </button>
                   <button
+                    type="button"
                     onClick={() => snoozeEvent(event.id)}
                     className="flex items-center justify-center rounded-md bg-blue-50 px-3 py-1 text-sm text-blue-700 transition-colors duration-300 hover:bg-blue-100"
                   >
@@ -222,6 +228,7 @@ export function DailyEventsUpdated() {
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-gray-800">Overdue Tasks</h2>
                 <button
+                  type="button"
                   onClick={() => setOverdueVisible(false)}
                   className="text-gray-500 hover:text-gray-700"
                 >
@@ -248,6 +255,7 @@ export function DailyEventsUpdated() {
                   <p className="text-sm">{event.description || "No additional details"}</p>
                   <div className="mt-2 flex space-x-2">
                     <button
+                      type="button"
                       onClick={() => completeEvent(event.id)}
                       className="bg-opacity-50 hover:bg-opacity-75 flex items-center justify-center rounded-md bg-white px-3 py-1 text-sm transition-colors duration-300"
                     >
@@ -255,6 +263,7 @@ export function DailyEventsUpdated() {
                       Complete
                     </button>
                     <button
+                      type="button"
                       onClick={() => snoozeEvent(event.id)}
                       className="bg-opacity-50 hover:bg-opacity-75 flex items-center justify-center rounded-md bg-white px-3 py-1 text-sm transition-colors duration-300"
                     >

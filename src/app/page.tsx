@@ -1,4 +1,3 @@
-import { CacheStats } from "@/components/fallacy-detector/cache-stats";
 import { FallacyDetector } from "@/components/fallacy-detector/fallacy-detector";
 import { FallacyLegend } from "@/components/fallacy-detector/fallacy-legend";
 import type { Metadata } from "next";
