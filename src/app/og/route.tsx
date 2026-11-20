@@ -88,7 +88,8 @@ export async function GET(req: NextRequest) {
         {/* Nebula Clouds */}
         {nebulaClouds.map((cloud, index) => (
           <div
-            key={`nebula-${index}`} // Use index as key instead of UUID
+            // biome-ignore lint/suspicious/noArrayIndexKey: static decorative list, never reordered
+            key={`nebula-${index}`}
             style={{
               position: "absolute",
               left: `${cloud.x}%`,
@@ -106,7 +107,8 @@ export async function GET(req: NextRequest) {
         {/* Star Field */}
         {stars.map((star, index) => (
           <div
-            key={`star-${index}`} // Use index as key instead of UUID
+            // biome-ignore lint/suspicious/noArrayIndexKey: static decorative list, never reordered
+            key={`star-${index}`}
             style={{
               position: "absolute",
               left: `${star.x}%`,

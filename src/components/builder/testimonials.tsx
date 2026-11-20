@@ -60,6 +60,7 @@ export const Testimonials = ({ title, subtitle, testimonials }: TestimonialsProp
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex">
               {testimonials.map((testimonial, index) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: static list, never reordered
                 <div key={index} className="relative min-w-0 flex-[0_0_100%] pl-4">
                   <div className="rounded-lg bg-white p-8 shadow-sm">
                     <div className="mb-6 flex items-center">
