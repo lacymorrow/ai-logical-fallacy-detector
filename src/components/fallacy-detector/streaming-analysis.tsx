@@ -391,6 +391,7 @@ export function StreamingAnalysis({
     // Helper function to render text with preserved formatting
     const renderFormattedText = (text: string) => {
       return text.split("\n").map((line, i, arr) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: lines are positional and never reordered
         <React.Fragment key={`line-${line.substring(0, 10)}-${i}`}>
           {line}
           {i < arr.length - 1 && <br />}
@@ -595,8 +596,19 @@ export function StreamingAnalysis({
               <h4 className="mb-2 font-semibold">Multiple Fallacies ({fallacies.length})</h4>
               <div className="max-h-60 overflow-y-auto">
                 {sortedFallacies.map((fallacy, idx) => (
+                  // biome-ignore lint/a11y/useSemanticElements: wraps block content, a button element cannot
                   <div
+                    // biome-ignore lint/suspicious/noArrayIndexKey: idx only disambiguates identical type/startIndex pairs
                     key={`${fallacy.type}-${fallacy.startIndex}-${idx}`}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onToggleSticky(fallacy);
+                      }
+                    }}
                     className={cn(
                       "mb-3 rounded p-2 transition-colors",
                       hoveredFallacyInGroup === fallacy ? "bg-gray-100 dark:bg-gray-700" : ""
