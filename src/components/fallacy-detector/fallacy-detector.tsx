@@ -65,7 +65,7 @@ export function FallacyDetector() {
     updateText(e.target.value);
   };
 
-  const analyzeText = async () => {
+  const analyzeText = () => {
     const currentText = textRef.current;
 
     if (!currentText.trim()) {
