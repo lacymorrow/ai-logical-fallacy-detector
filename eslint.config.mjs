@@ -200,6 +200,18 @@ const eslintConfig = [
       "@typescript-eslint/no-unsafe-call": "warn",
       "@typescript-eslint/no-unsafe-member-access": "warn",
       "@typescript-eslint/no-unsafe-return": "warn",
+      // LAC-8715 / LAC-8741: style rules downgraded rather than mass-rewritten.
+      // `||` to `??` changes behavior wherever the left side can be 0 or "", so the
+      // 18 sites are not auto-fixed.
+      "@typescript-eslint/prefer-nullish-coalescing": "warn",
+      // All 10 hits are one switch block in streaming-analysis.tsx.
+      "@typescript-eslint/no-unsafe-enum-comparison": "warn",
+      // No-op context defaults in keyboard-shortcut-provider.tsx.
+      "@typescript-eslint/no-empty-function": "warn",
+      // Every site is async by interface contract (Next.js server actions must be
+      // declared async, route handlers, NextAuth callbacks, Clerk facades). Already
+      // "off" in the tests/ and scripts/ blocks below.
+      "@typescript-eslint/require-await": "off",
     },
   },
 

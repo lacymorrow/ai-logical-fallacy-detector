@@ -78,7 +78,9 @@ export const Testimonials = ({ title, subtitle, testimonials }: TestimonialsProp
                         <div className="text-sm text-gray-600">{testimonial.role}</div>
                       </div>
                     </div>
-                    <blockquote className="text-lg text-gray-700">"{testimonial.quote}"</blockquote>
+                    <blockquote className="text-lg text-gray-700">
+                      &ldquo;{testimonial.quote}&rdquo;
+                    </blockquote>
                   </div>
                 </div>
               ))}

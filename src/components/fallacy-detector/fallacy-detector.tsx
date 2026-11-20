@@ -17,7 +17,10 @@ export function FallacyDetector() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [isInputOpen, setIsInputOpen] = useState(true);
+  // The ref lets cleanupStream abort synchronously; the state mirrors it so the
+  // child receives the controller as a prop without a ref read during render.
   const abortControllerRef = useRef<AbortController | null>(null);
+  const [abortController, setAbortController] = useState<AbortController | null>(null);
   // Ref to track if we're currently rendering the StreamingAnalysis component
   const isStreamingRef = useRef(false);
   // Use a key to force remount of StreamingAnalysis when needed
@@ -42,6 +45,7 @@ export function FallacyDetector() {
       console.log("Aborting previous stream");
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
+      setAbortController(null);
     }
     isStreamingRef.current = false;
 
@@ -61,7 +65,7 @@ export function FallacyDetector() {
     updateText(e.target.value);
   };
 
-  const analyzeText = async () => {
+  const analyzeText = () => {
     const currentText = textRef.current;
 
     if (!currentText.trim()) {
@@ -96,7 +100,9 @@ export function FallacyDetector() {
     isStreamingRef.current = true;
 
     // Create new abort controller for this stream
-    abortControllerRef.current = new AbortController();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+    setAbortController(controller);
 
     // Increment the key to force a remount of the StreamingAnalysis component
     setStreamKey((prevKey) => prevKey + 1);
@@ -230,7 +236,7 @@ export function FallacyDetector() {
               text={text}
               onComplete={handleStreamComplete}
               onError={handleStreamError}
-              abortController={abortControllerRef.current}
+              abortController={abortController}
             />
           )}
         </Card>

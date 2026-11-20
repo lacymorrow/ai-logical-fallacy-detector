@@ -657,8 +657,7 @@ export function StreamingAnalysis({
   const toggleStickyFallacy = useCallback((fallacy: LogicalFallacy) => {
     setStickiedFallacy((prev) => {
       if (
-        prev &&
-        prev.type === fallacy.type &&
+        prev?.type === fallacy.type &&
         prev.startIndex === fallacy.startIndex &&
         prev.endIndex === fallacy.endIndex
       ) {
