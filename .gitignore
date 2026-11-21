@@ -108,3 +108,6 @@ logs
 
 # mirrored from docs/images by scripts/sync-docs-images.mjs
 public/docs
+
+# next telemetry config
+/cache/

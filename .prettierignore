@@ -11,3 +11,6 @@ docs-site
 
 # local agent worktrees and run artifacts (untracked)
 .claude
+
+# written by `next telemetry disable` in postinstall on fresh runners
+cache
