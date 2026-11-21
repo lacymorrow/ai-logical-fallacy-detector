@@ -27,7 +27,8 @@ describe("fallacy-detection without OPENAI_API_KEY", () => {
   });
 
   it("analyzeFallacies rejects with OpenAIUnavailableError, not a generic failure", async () => {
-    const { analyzeFallacies, OpenAIUnavailableError } = await import("@/server/services/fallacy-detection");
+    const { analyzeFallacies, OpenAIUnavailableError } =
+      await import("@/server/services/fallacy-detection");
     await expect(analyzeFallacies("text")).rejects.toBeInstanceOf(OpenAIUnavailableError);
   });
 });
