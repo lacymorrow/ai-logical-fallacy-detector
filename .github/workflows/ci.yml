@@ -21,6 +21,8 @@ name: CI
 on:
   pull_request:
     branches: [main]
+    # labeled: applying ci:full to an open PR must start the expensive jobs.
+    types: [opened, synchronize, reopened, labeled]
   push:
     branches: [main]
 
