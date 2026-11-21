@@ -120,6 +120,8 @@ jobs:
     timeout-minutes: 25
     needs: [typecheck, lint]
     env:
+      # next.config.ts refuses to build without a master secret (CI-only dummy value).
+      APP_SECRET: ci-only-app-secret-do-not-use-in-prod
       AUTH_SECRET: ci-only-secret-do-not-use-in-prod
       SKIP_ENV_VALIDATION: "1"
     steps:
@@ -156,6 +158,7 @@ jobs:
       E2E_SKIP_DB_SETUP: "0"
       USE_EXTERNAL_DB: "1"
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/shipkit_e2e
+      APP_SECRET: ci-only-app-secret-do-not-use-in-prod
       AUTH_SECRET: ci-only-secret-do-not-use-in-prod
       SKIP_ENV_VALIDATION: "1"
       CI: "true"
