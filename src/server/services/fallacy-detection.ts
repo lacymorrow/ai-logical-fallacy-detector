@@ -3,9 +3,35 @@ import type { AnalysisResult, FallacyType, LogicalFallacy } from "@/types/fallac
 import OpenAI from "openai";
 import { cacheService } from "./cache-service";
 
-const openai = new OpenAI({
-  apiKey: env.OPENAI_API_KEY,
-});
+/**
+ * Thrown when OPENAI_API_KEY is unset. The OpenAI SDK throws from its constructor
+ * without a key, so the client is built lazily: importing this module must never
+ * fail, or `next build` dies while collecting page data for /api/analyze-fallacies.
+ *
+ * Gated on the key alone, not NEXT_PUBLIC_FEATURE_OPENAI_ENABLED: that flag is not
+ * set on the Vercel production deployment, so gating on it would silently disable
+ * the product's only feature.
+ */
+export class OpenAIUnavailableError extends Error {
+  constructor() {
+    super("OPENAI_API_KEY is not configured");
+    this.name = "OpenAIUnavailableError";
+  }
+}
+
+export function isOpenAIAvailable(): boolean {
+  return Boolean(env.OPENAI_API_KEY);
+}
+
+let client: OpenAI | null = null;
+
+function getOpenAI(): OpenAI {
+  if (!env.OPENAI_API_KEY) {
+    throw new OpenAIUnavailableError();
+  }
+  client ??= new OpenAI({ apiKey: env.OPENAI_API_KEY });
+  return client;
+}
 
 const SYSTEM_PROMPT = `You are a precise logical fallacy detection system. Your task is to analyze text and identify logical fallacies with high accuracy.
 
@@ -63,7 +89,7 @@ export async function analyzeFallacies(text: string): Promise<AnalysisResult> {
     }
     console.log("Cache miss, performing analysis");
 
-    const completion = await openai.chat.completions.create({
+    const completion = await getOpenAI().chat.completions.create({
       model: "gpt-4o",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
@@ -111,6 +137,7 @@ Expected response format:
 
     return analysisResult;
   } catch (error) {
+    if (error instanceof OpenAIUnavailableError) throw error;
     console.error("Error analyzing fallacies:", error);
     throw new Error("Failed to analyze text for logical fallacies");
   }
@@ -122,7 +149,7 @@ export async function* streamAnalyzeFallacies(
   console.log(`Starting streaming analysis for text: ${text.slice(0, 50)}...`);
   try {
     console.log("Starting streaming fallacy analysis");
-    const stream = await openai.chat.completions.create({
+    const stream = await getOpenAI().chat.completions.create({
       model: "gpt-4o",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
@@ -254,6 +281,7 @@ Format each fallacy as:
     // Yield the final result to the client
     yield finalResult;
   } catch (error) {
+    if (error instanceof OpenAIUnavailableError) throw error;
     console.error("Error streaming fallacy analysis:", error);
     throw new Error("Failed to stream fallacy analysis");
   }

@@ -1,4 +1,9 @@
-import { analyzeFallacies, streamAnalyzeFallacies } from "@/server/services/fallacy-detection";
+import {
+  OpenAIUnavailableError,
+  analyzeFallacies,
+  isOpenAIAvailable,
+  streamAnalyzeFallacies,
+} from "@/server/services/fallacy-detection";
 import { cacheService } from "@/server/services/cache-service";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -69,6 +74,13 @@ function checkRateLimit(ip: string): {
   };
 }
 
+function unavailableResponse() {
+  return NextResponse.json(
+    { error: "Analysis is temporarily unavailable" },
+    { status: 503, headers: { "Cache-Control": "no-store" } }
+  );
+}
+
 export async function POST(request: Request) {
   try {
     // Get request ID if provided
@@ -108,6 +120,11 @@ export async function POST(request: Request) {
 
     const { text, stream, skipCache } = requestSchema.parse(body);
     console.log(`Parsed request [${requestId}]:`, { stream, skipCache });
+
+    // A missing key must read as an error, never as "no fallacies found".
+    if (!isOpenAIAvailable()) {
+      return unavailableResponse();
+    }
 
     const commonHeaders = {
       "X-RateLimit-Limit": limit.toString(),
@@ -198,6 +215,9 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error("Error in fallacy analysis route:", error);
+    if (error instanceof OpenAIUnavailableError) {
+      return unavailableResponse();
+    }
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: "Invalid request data", details: error.errors },
