@@ -23,5 +23,9 @@
   "allowScripts": {
     "esbuild@0.28.1": true,
     "workerd@1.20260815.1": true
+  },
+  "overrides": {
+    "dompurify": "^3.4.17",
+    "proxy-addr": "^2.0.8"
   }
 }
